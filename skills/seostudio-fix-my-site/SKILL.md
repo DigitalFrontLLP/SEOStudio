@@ -76,6 +76,8 @@ measured later.
        robots.txt), unless it is meant to stay out.
      - `page_error`: bring the page back, or redirect it to the closest live page and point the
        site's links there.
+     - `broken_links`: each link in `params.links` leads to an error page: point it at the right
+       live page, or remove it.
      - `audit_issues`: those Site audit checks on this page.
      - `losing_traffic` with no `params.cause`: `seo_dashboard_get` by search, filtered to the page, with
        `compare: "previous"`, shows which searches lost the clicks; fix the cause (its words: the

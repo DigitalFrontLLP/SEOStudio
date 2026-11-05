@@ -64,14 +64,14 @@ run ends by picking the main keyword with the user.
 | `projects_list`, `projects_get`, `projects_update`, `account_status_get`, `seo_plan_get`, `skill_get`, `seo_plan_step_confirm`, `seo_search_console_sync`, `search_performance_get` | free |
 | `seo_keywords_list` | free; `review: true` reads the targeted pool, 100 short rows a page; with `brief: true` keywords only, 1,000 a page |
 | `seo_competitor_keywords_get` | paid per page of 1,000 rows fresh, free from cache. One call buys at most 10 pages |
-| `seo_keyword_ideas_get` | paid per request plus a share per row, fresh; free from cache. `preview: true` prices it and buys nothing |
+| `seo_keyword_ideas_get` | paid per request plus a share per row, fresh; free from cache. `estimate: true` prices it and buys nothing |
 | `seo_keyword_metrics_get` | paid per keyword bought (one request carries up to 700); held numbers are free. Keywords with no figure are asked of Google Ads, per batch of 1,000. Never pass `clickstream` unless the user asks |
 | `seo_keywords_save` | free; `evaluate: true` buys only the facts the keywords miss |
 | `seo_serp_get` with `saved: true` | per keyword not judged yet: a fresh first page (free from cache) plus a small reserve for judging it and the keyword questions (usually settles lower) |
-| `seo_keywords_update` | `state: "apply"` with new topics buys each keyword's topic answer; inside the run it collects the related searches of the targeted keywords' Google results, priced at the `seo_keyword_metrics_get` price and checked at the `seo_serp_get` price; it labels the Google results of the keywords the rules keep, and ranks; with `preview: true` and topic `examples` it buys only the test answers not held yet; `state: "check"` and targeting named keywords buy what they miss (`preview: true` prices it); removing is free |
-| `seo_research_log_append` | free; it also ranks the targeted keywords (free) |
+| `seo_keywords_update` | `state: "apply"` with new topics buys each keyword's topic answer; inside the run it collects the related searches of the targeted keywords' Google results, priced at the `seo_keyword_metrics_get` price and checked at the `seo_serp_get` price; it labels the Google results of the keywords the rules keep, and ranks; with `estimate: true` and topic `examples` it buys only the test answers not held yet; `state: "check"` and targeting named keywords buy what they miss (`estimate: true` prices it); removing is free |
+| `seo_research_log_append` | free; it also ranks the targeted keywords, buying any priority answers they miss |
 
-Prices depend on the account's plan: quote only the price a tool's description, its `preview` or
+Prices depend on the account's plan: quote only the price a tool's description, its `estimate` or
 its answer states, never a figure from memory. Every paid tool returns what it cost. Add those
 numbers; do not guess.
 
@@ -96,7 +96,7 @@ numbers; do not guess.
    without it: skip step 5, and the research runs from the site, its profile, the competitors and
    the keyword data.
 4. **Estimate the cost.** `account_status_get` for the balance. `seo_keyword_ideas_get` with the market,
-   the language, `collect: true` and `preview: true`. Its `run` is the whole run's estimate: say it in
+   the language, `collect: true` and `estimate: true`. Its `run` is the whole run's estimate: say it in
    one line, likely figure first ("~$`run.expected`, up to ~$`run.max`"), never as a bare
    range. If the balance cannot cover `run.max`, say both numbers. When the run stops at its
    maximum, say the new total in one line and carry on as the tool's answer says.
@@ -196,7 +196,7 @@ numbers; do not guess.
     Test each topic: pick 5 searches from the scan that belong in it and 5 near ones that do not (1
     to 5 a side when the scan has fewer; never invent one). When the scan has them, the near ones
     include the same kind of search for another product or market, or a general one spanning many.
-    Call `seo_keywords_update` with `state: "apply"`, `preview: true` and each topic's
+    Call `seo_keywords_update` with `state: "apply"`, `estimate: true` and each topic's
     `examples: {in, out}`. A topic with `pass: false` gets a sharper definition: its `inScoredOut`
     are `in` searches the definition missed, so say what they are about in it; its `outScoredIn` are
     `out` searches it took in, so name what they are about in `Not:`. Test it again, at most twice.
@@ -294,15 +294,15 @@ Use the same market and language. Each of these is the user's own request; never
 - **Change the focus:** run step 11 (it buys only the answers still missing, usually none), ask the
   questions of step 13 again, apply as in step 14 (a changed focus clears your earlier removals),
   then review every row as in step 15.
-- **"Is X a good keyword?"** `seo_keywords_save` with the keyword and `preview: true`. Nothing is
+- **"Is X a good keyword?"** `seo_keywords_save` with the keyword and `estimate: true`. Nothing is
   saved or bought. Say the verdict in one line.
 - **"Add X":** `seo_keywords_save` with source `user` and `evaluate: true`. It asks the same
-  questions under the saved focus. Say the preview's price first when it is above 0.
-- **"Find more keywords":** `seo_keyword_ideas_get` without `collect`, `preview: true` first.
+  questions under the saved focus. Say the estimate's price first when it is above 0.
+- **"Find more keywords":** `seo_keyword_ideas_get` without `collect`, `estimate: true` first.
 - **"Target these" / "leave these out":** `seo_keywords_update` with `state: "active"` or
-  `"dormant"`, the `keywords` and a `reason`. For targeting, `preview: true` first.
+  `"dormant"`, the `keywords` and a `reason`. For targeting, `estimate: true` first.
 - **"Check the waiting keywords" / "Re-rank":** `seo_keywords_update` with `state: "check"` /
-  `"rerank"`, `preview: true` first.
+  `"rerank"`, `estimate: true` first.
 - **"Start over":** `seo_keywords_update` with `state: "start_over"` and a `reason`; the tool
   itself asks the user to approve, so do not ask first. Data already bought stays. When the request says the page already cleared the research, do not start over
   again: run the steps from the start.

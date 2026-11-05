@@ -41,9 +41,9 @@ many guessed ones.
 - **Only what a page shows.** Every address you add is one you opened in this run. Never invent an
   address, a name, a price or a figure, and never guess whether links are followed: note the link
   attribute only when the page states it.
-- **Free and fitting.** Drop paid-only places (pay to list, sponsored posts), link farms (pages of
-  unrelated links, sites that sell links), dead sites and sites outside the business's field, place
-  or audience. A paid tier beside a real free path is fine: record the free path.
+- **Fitting.** Drop sponsored posts, link farms (pages of unrelated links, sites that sell links),
+  dead sites and sites outside the business's field, place or audience. A paid-only directory is
+  fine: record its price (`method: "paid"`); a paid tier beside a free path: record the free path.
 - **Niche first.** Prefer smaller sites about the business's own field, place or audience over big
   generic directories and "free SEO directory" lists.
 - **Web research:** follow the `web_search` description (your runtime's own TinyFish tools when it
@@ -66,7 +66,8 @@ many guessed ones.
    - resource and useful-links pages in its field;
    - communities, associations and profile sites its audience uses;
    - unpaid guest-post and contributor pages ("write for us", "contribute");
-   - pages that name a competitor and could name the site too.
+   - pages that name a competitor and could name the site too;
+   - awesome lists on GitHub for its field (curated lists that take entries by pull request).
 4. **Search and shortlist.** Keep the candidates that fit, about twice the target. Skip a domain the
    project already holds: `seo_backlinks_get` `view: "check"` with its `domain`, and
    `seo_link_sources_get` `view: "all"` with the domain as `q` (a source already there: add its row
@@ -75,13 +76,20 @@ many guessed ones.
    Keep it only when all hold:
    - it is live and about the business's field, place or audience;
    - you found the exact page where a listing is submitted, a piece pitched or the owner reached;
-   - a free path exists, and the page shows links to the businesses it names or says it allows one.
-   Drop the rest with a short reason: dead, paid only, off-topic, link farm, no link, no way in.
+   - the page shows links to the businesses it names or says it allows one;
+   - an awesome list: it still merges pull requests, allows a product to add itself and has a
+     section the site fits.
+   Drop the rest with a short reason: dead, off-topic, link farm, no link, no way in.
+   One of the app's sources whose page fails to load on a second try or is clearly parked or for
+   sale: also `seo_link_sources_update` `action: "report"` with its `sourceId` and
+   `reason: "site_gone"`; paid only: `reason: "paid_only"`; broken: `reason: "form_rejected"`. A
+   slow page is not dead.
 6. **Add the good ones.**
    - **It takes submissions** (a listing, a profile, a launch or review page):
      `seo_link_sources_update` `action: "suggest"` with `url` (the submit page), `name`, `kind`,
-     `scope` (the kinds of business it lists, in a few plain words) and `method` (`instant`, `account`, `approval`, or
-     `unknown` when the page does not say). Then add the row with `type: "submission"` and the
+     `scope` (the kinds of business it lists, in a few plain words) and `method` (`instant`, `account`, `approval`, `paid`, or
+     `unknown` when the page does not say). An awesome list: `kind: "awesome_list"`, `url` the
+     list's page, `method: "approval"`. Then add the row with `type: "submission"` and the
      answer's id as `sourceId`.
    - **The rest**, by type: `list_article` (a resource or list page), `forum` (a thread or a
      community), `link_gap` (a page that links to competitors), `manual` (a guest-post or

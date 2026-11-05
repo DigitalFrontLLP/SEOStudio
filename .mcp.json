@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "seostudio": {
+      "type": "http",
+      "url": "https://seostudio.com/api/mcp"
+    }
+  }
+}

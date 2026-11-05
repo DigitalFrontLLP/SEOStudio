@@ -42,8 +42,8 @@ THIS business" against this profile.
   say so.
 - **Never write anything that can change**: no prices, plan or tier names, versions, limits, dates,
   counts, promotions, "currently", funding or headcount.
-- **Paid calls once.** `web_extract`, `web_search` and `projects_competitors_find` state their
-  own price; never call one twice for the same thing. A call refused for a low balance fetched and
+- **Paid calls once.** `projects_competitors_find` states its own price, and `web_extract` and
+  `web_search` say in their description when they are free; never call one twice for the same thing. A call refused for a low balance fetched and
   charged nothing: say so, say that topping up fixes it, and carry on with the free part
   (`projects_update` is free, and the user's own words about their business are good evidence).
 - **Never invent a domain** to fill the list: settle an address with a search or drop the company.

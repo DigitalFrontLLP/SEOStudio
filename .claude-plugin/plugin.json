@@ -1,0 +1,18 @@
+{
+  "name": "seostudio",
+  "displayName": "SEOStudio",
+  "version": "1.0.0",
+  "description": "An AI SEO agent that gets your site found on Google and ChatGPT.",
+  "author": {
+    "name": "SEOStudio",
+    "email": "support@seostudio.com"
+  },
+  "homepage": "https://seostudio.com",
+  "privacyPolicyUrl": "https://seostudio.com/privacy",
+  "repository": "https://github.com/DigitalFrontLLP/SEOStudio",
+  "license": "MIT",
+  "keywords": [
+    "mcp",
+    "seo"
+  ]
+}

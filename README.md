@@ -21,6 +21,13 @@ To install one skill only:
 npx skills add DigitalFrontLLP/SEOStudio --skill seostudio-keyword-research
 ```
 
+Or install the skills and the MCP server in one step:
+
+- **Claude Code:** `/plugin install seostudio --marketplace DigitalFrontLLP/SEOStudio`, then run `/mcp`
+  and sign in.
+- **Gemini CLI:** `gemini extensions install https://github.com/DigitalFrontLLP/SEOStudio`, then sign
+  in when it asks.
+
 ## 2. Connect the MCP server
 
 Create a free account at [seostudio.com](https://seostudio.com). Then add this MCP server to your AI

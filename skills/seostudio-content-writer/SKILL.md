@@ -326,7 +326,8 @@ stands.
 - A link only where it helps the reader: the source of a fact you state, or a page the reader will want
   next; never a link or an image to move the score. A fact's source is linked once in its section.
 - External links `{rel="nofollow"}` (in HTML, `rel="nofollow"`) unless the source is of very high
-  authority (then list its host in `highAuthority`).
+  authority (then list its host in `highAuthority`). Leave a testimonial's or review's link (a social
+  post, a review site) as it is.
 - Internal links: exactly the ones the brief lists under `internalLinks.out`, each once, in a sentence
   where it helps the reader, with short words that say where it goes; no other internal link. The map
   adds the links from other pages after the page is live.

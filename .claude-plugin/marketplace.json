@@ -1,0 +1,15 @@
+{
+  "name": "seostudio",
+  "owner": {
+    "name": "SEOStudio",
+    "email": "support@seostudio.com"
+  },
+  "description": "SEOStudio's plugin for Claude Code.",
+  "plugins": [
+    {
+      "name": "seostudio",
+      "source": "./",
+      "description": "An AI SEO agent that gets your site found on Google and ChatGPT."
+    }
+  ]
+}

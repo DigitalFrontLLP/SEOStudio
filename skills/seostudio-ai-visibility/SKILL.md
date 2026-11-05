@@ -61,9 +61,11 @@ are saved as keywords (the "AI searches" tab), so the user can write pages for t
   question; still ask what only the user can answer.
 - **Keep the prompt set stable** (see step 4), so trends stay comparable.
 - **Answers from the run tool:**
-  - `running` or `checking`: the answers usually come in within a few minutes. Wait
-    `checkAgainInSeconds`, then call once more (with no `prompts`: the open run carries on); nothing
-    is bought twice.
+  - `running`: the answers usually come in within a few minutes. Wait `checkAgainInSeconds`, then
+    read `seo_ai_visibility_get` with `include: ["run"]` (free) until its `status` is `done`. Never
+    follow a run with the run tool.
+  - `checking`: wait `checkAgainInSeconds`, then call `checkWaiting: true` again; nothing is
+    bought twice.
   - `paused`: say its `reason` and what is left in one line, then call again with
     `continue: true` to carry on.
   - `refused`: bought nothing. `insufficient_credits`: say the price and the balance. `blocked`: say why. `busy`:
@@ -113,8 +115,9 @@ are saved as keywords (the "AI searches" tab), so the user can write pages for t
    | `head_to_head` | 2 | two most-named competitors compared |
    | `problem` | 0-2 | the option that solves a problem from Search Console questions |
 
-   Then 2 or 3 `about_you` prompts that name the site itself (is it legit, a review). They are
-   reported apart and never counted in the headline.
+   Then 2 or 3 `about_you` prompts that name the site itself (is it legit, a review). They, and the
+   `alternatives` and `head_to_head` prompts (they name a competitor), are reported apart and never
+   counted in the headline.
 
    Each prompt:
    - is a real question one buyer types to an AI assistant, in the project's language, 6 to 15
@@ -137,8 +140,9 @@ are saved as keywords (the "AI searches" tab), so the user can write pages for t
    line, then the prompts grouped under short category lines, each prompt on its own `- ` line,
    shortened. End with a "Dropped:" list when prompts are retired. Then run them.
 8. **Run.** `seo_ai_visibility_run` with the pair and the same `prompts`. While it answers
-   `running`, wait `checkAgainInSeconds`, then call it once with no `prompts`. When it answers
-   `done`, read `seo_ai_visibility_get` with `include: ["report", "crawlers"]`.
+   `running`, wait `checkAgainInSeconds`, then read `seo_ai_visibility_get` with
+   `include: ["run"]`. When the run is `done`, read `seo_ai_visibility_get` with
+   `include: ["report", "crawlers"]`.
 
 ## Finish
 

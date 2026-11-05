@@ -54,8 +54,9 @@ AI searches are added to the pages as questions when you finish.
 
 Writing the map is free: `projects_get`, `seo_plan_get`, `seo_content_plan_get`,
 `seo_content_plan_update` and `seo_content_plan_build` with `mode` `rebuild` or `finish` read and write
-this app's own rows. Only `seo_content_plan_build` with `mode: "links"` can cost money (it says its price
-with `estimate: true`). The tools have NO default market or language: take both from the project and
+this app's own rows. A finished map starts paid work on its own (its live pages scored, the site's pages
+read for the links): `mode: "finish"` with `estimate: true` names each part with its price.
+`seo_content_plan_build` with `mode: "links"` costs money too (it says its price with `estimate: true`). The tools have NO default market or language: take both from the project and
 use the same pair in every call.
 
 ## How to plan the map
@@ -204,7 +205,8 @@ one question, every set follows one template, every hub is worth a visit, every 
    (main keyword or group name), most important first. Code sorts by tier and keeps your order inside
    each; when a page's default tier misjudges it (a tool for other buyers), move it one tier with `tier`
    and a one-line `reason` (offer, lists, commercial, rival, informational: the home page, sales pages, tools and a review of the business are 'offer'; lists, alternatives and comparisons with the business 'lists'; a page about one other business 'rival'; guides and other comparisons 'informational'; the rest 'commercial'), a move further is refused. The home page stays first and a page follows its parent; a page you leave out is placed by its demand.
-6. **Finish.** `seo_content_plan_build` with `mode: "finish"`. When it answers `refused` with
+6. **Finish.** `seo_content_plan_build` with `mode: "finish"` and `estimate: true`; when its
+   `startsPaid` lists paid work, say each price in one line. Then `mode: "finish"`. When it answers `refused` with
    `incomplete`, place the searches it lists or type the pages it lists, then finish again. When it
    answers `urlQuestion`, ask it once with the question tool, its options in order, and send the chosen
    option's `urlStructure` with `seo_content_plan_update`.

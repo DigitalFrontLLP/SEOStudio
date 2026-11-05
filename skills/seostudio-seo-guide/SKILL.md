@@ -25,7 +25,7 @@ rules win over this page.
   end on a question written in prose.
 - **Short.** A few lines of facts, then one next action offered with the question tool.
 - When you must stop, say in one line what is missing, then ask for it.
-- **Money.** Paid tools state their price; `estimate: true` (or `quote`) prices a call and buys
+- **Money.** Paid tools state their price; `estimate: true` prices a call and buys
   nothing. Say the price before a paid call (`~$0.40`) and the cost after, in dollars. The user's
   money is their balance (`account_status_get`), never "credits". Reads of held data are free.
 - **Market and language.** The tools have NO default market or language: take both from the
@@ -61,13 +61,13 @@ rules win over this page.
 | Rankings | `seo_rank_tracking_get` (the site's positions come from Search Console; guest posts are checked), and `search_performance_get` or `seo_dashboard_get` for every search |
 | Why did traffic drop? | `seo_actions_list`, `seo_dashboard_get` with `compare`, `seo_pages_get` with `results: ["lost"]`, `web_analytics_get` |
 | Site health | `seo_site_audit_get`, `seo_site_health_get`, `seo_indexing_get`; fixes: `fix-my-site` |
-| A competitor or any domain | `seo_site_explorer_get` (`quote` first); `opportunities` is free |
-| Links to win | `seo_site_explorer_get` sections `link_gap`, `broken_backlinks`, `referring_domains`; `domains` scores up to 1,000 sites at once (`quote` first) |
+| A competitor or any domain | `seo_site_explorer_get` (`estimate` first); `opportunities` is free |
+| Links to win | `seo_site_explorer_get` sections `link_gap`, `broken_backlinks`, `referring_domains`; `domains` scores up to 1,000 sites at once (`estimate` first) |
 | Get links | `seo_backlinks_get` (free; `check` before working any site), `seo_link_sources_get`; submitting is the `link-submissions` skill; more places from the live web: the `find-link-sources` skill; pitching sites by email: the `link-outreach` skill |
 | Rank on big sites with posts | `seo_parasite_get` view `chances` (free); writing one is the `parasite-post` skill |
-| Local results, Maps, reviews | `seo_local_get` (`quote` first) |
+| Local results, Maps, reviews | `seo_local_get` (`estimate` first) |
 | One keyword's figures, ideas or Google results | `seo_keyword_metrics_get`, `seo_keyword_ideas_get` with `seeds`, `seo_serp_get` with `depth: 10` or a `type` (AI Overview, AI Mode, Maps) (priced first) |
-| A keyword's history, forecast, top 10 strength | `seo_keyword_lookup_get` (`quote` first) |
+| A keyword's history, forecast, top 10 strength | `seo_keyword_lookup_get` (`estimate` first) |
 | A report (site review, rankings, AI visibility, keywords, a check-in to share) | the `seo-report` skill; saved ones: `seo_reports_get` |
 
 No fit: `skills_list` and pick by description; with no skill, use the page's tools below, free

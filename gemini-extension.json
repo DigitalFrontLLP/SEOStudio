@@ -1,0 +1,10 @@
+{
+  "name": "seostudio",
+  "version": "1.0.0",
+  "description": "An AI SEO agent that gets your site found on Google and ChatGPT.",
+  "mcpServers": {
+    "seostudio": {
+      "httpUrl": "https://seostudio.com/api/mcp"
+    }
+  }
+}
