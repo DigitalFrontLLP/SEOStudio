@@ -128,10 +128,12 @@ THIS business" against this profile.
      offer to buy competitor keyword lists for "exact traffic": it is the same estimate.
    - **`competitorsRefused` means NOTHING was saved** and the project keeps the list it had. Say its
      `message` in one line and offer "Try again" / "Later"; on "Try again" send the same `replace`
-     once more; on "Later" or a second refusal, stop. Its `code` `competitor_traffic_no_balance`
-     means add funds first: offer no retry. Then never say how many competitors were dropped or
-     kept, never say "none dropped for low traffic", and never call the list saved or checked
-     unless an answer carried `competitorRanking`.
+     once more; on "Later" or a second refusal, stop. Then never say how many competitors were
+     dropped or kept, never say "none dropped for low traffic", and never call the list saved or
+     checked unless an answer carried `competitorRanking`.
+   - **`competitorsUnchecked` means the list was saved, not checked yet**: the check runs on its
+     own once the balance can pay. Say its `message` in one line, offer no retry, and never call
+     the list checked.
 
 ## Finish
 
