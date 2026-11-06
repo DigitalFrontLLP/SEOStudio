@@ -78,6 +78,8 @@ measured later.
        site's links there.
      - `broken_links`: each link in `params.links` leads to an error page: point it at the right
        live page, or remove it.
+     - `merge_thin_pages`: merge each page in `params.pages` into `params.target` (step 6, "To merge
+       two pages"): its unique facts go into the target, then the page redirects to it.
      - `audit_issues`: those Site audit checks on this page.
      - `losing_traffic` with no `params.cause`: `seo_dashboard_get` by search, filtered to the page, with
        `compare: "previous"`, shows which searches lost the clicks; fix the cause (its words: the
@@ -156,7 +158,7 @@ Three short lines, nothing else:
 
 1. `Fixed N issues on M pages.` (plus `K could not be changed on this site.` when some could not)
 2. What is left, in one line.
-3. `The effect shows on each page's chart after 14 and 28 days.`
+3. `Google shows each fix once it re-reads the page (known pages about every 30 days); its effect is judged from that day.`
 
 When nothing could be changed, skip these lines: name the problems found in one short list and why
 they cannot be changed from here.

@@ -1,0 +1,89 @@
+{
+	"name": "@seostudio/audit-engine",
+	"version": "0.1.0",
+	"description": "The SEOStudio site audit engine: a polite crawler and its audit rules, with no database.",
+	"license": "MIT",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/DigitalFrontLLP/SEOStudio.git",
+		"directory": "packages/audit-engine"
+	},
+	"homepage": "https://seostudio.com",
+	"keywords": [
+		"seo",
+		"site-audit",
+		"crawler",
+		"seo-audit"
+	],
+	"type": "module",
+	"exports": {
+		".": {
+			"types": "./dist/index.d.ts",
+			"default": "./dist/index.js"
+		},
+		"./reading": {
+			"types": "./dist/reading.d.ts",
+			"default": "./dist/reading.js"
+		},
+		"./resource-check": {
+			"types": "./dist/resource-check.d.ts",
+			"default": "./dist/resource-check.js"
+		},
+		"./facts": {
+			"types": "./dist/facts.d.ts",
+			"default": "./dist/facts.js"
+		},
+		"./types": {
+			"types": "./dist/types.d.ts",
+			"default": "./dist/types.js"
+		},
+		"./host-gate": {
+			"types": "./dist/host-gate.d.ts",
+			"default": "./dist/host-gate.js"
+		},
+		"./package.json": "./package.json"
+	},
+	"files": [
+		"dist",
+		"README.md",
+		"LICENSE"
+	],
+	"engines": {
+		"node": ">=22.19.0"
+	},
+	"publishConfig": {
+		"access": "public"
+	},
+	"scripts": {
+		"build": "tsup",
+		"check-types": "tsc --noEmit",
+		"dictionaries:build": "tsx scripts/build-dictionaries.ts",
+		"amp:build": "tsx scripts/build-amp-validator.ts"
+	},
+	"sideEffects": false,
+	"devDependencies": {
+		"@types/node": "26.6.5",
+		"@types/nspell": "^2.1.6",
+		"dictionary-en": "^4.0.0",
+		"dictionary-en-gb": "^3.0.0",
+		"dictionary-es": "^4.0.0",
+		"dictionary-fr": "^3.0.0",
+		"dictionary-nl": "^2.0.0",
+		"tsup": "^9.0.0",
+		"tsx": "4.23.15",
+		"typescript": "6.0.3"
+	},
+	"dependencies": {
+		"axe-core": "^4.13.0",
+		"css-select": "^7.0.0",
+		"domhandler": "^6.0.1",
+		"franc": "^6.2.0",
+		"htmlparser2": "^12.0.0",
+		"nspell": "^2.1.5",
+		"parse5": "^8.0.1",
+		"re2js": "^2.8.6",
+		"undici": "^8.12.3",
+		"zod": "^4.6.7"
+	},
+	"types": "./dist/index.d.ts"
+}

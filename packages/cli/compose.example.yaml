@@ -1,0 +1,14 @@
+# seostudio agent on your own server. Put the key in a .env file next to this one
+# (SEOSTUDIO_API_KEY=...), never in this file or a repository.
+services:
+  seostudio-agent:
+    build: .
+    image: seostudio-agent
+    restart: unless-stopped
+    environment:
+      SEOSTUDIO_API_KEY: ${SEOSTUDIO_API_KEY:?Set SEOSTUDIO_API_KEY in .env}
+      # The projects this server crawls: their ids (or site domains), comma separated.
+      SEOSTUDIO_PROJECTS: ${SEOSTUDIO_PROJECTS:?Set SEOSTUDIO_PROJECTS in .env}
+    read_only: true
+    security_opt:
+      - no-new-privileges:true

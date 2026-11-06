@@ -261,6 +261,7 @@ stands.
     - **Copy mode** (a new page): the page stays on the Content writer page for the user to copy; say so in one line,
       and that connecting WordPress or the site's code lets you publish it.
     - Then at most two lines: the score, where the page went, and the open "needed from you" items.
+      For a live page add: `Google shows it once it re-reads the page (known pages about every 30 days); its effect is judged from that day.`
     - End the run: `seo_content_writer_update` `stopRun: true` (with `pageId` and `runId`).
     - When the page is live, ask once: "Add its internal links now (Recommended)" / "Later"; on the
       first, start the `fix-my-site` skill (read it with `skill_get`) with the focus `links`.

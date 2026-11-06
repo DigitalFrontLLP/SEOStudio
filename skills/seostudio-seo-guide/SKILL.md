@@ -1,7 +1,8 @@
 ---
 name: seostudio-seo-guide
-description: "SEOStudio: START HERE for any SEO request that does not name a skill - the map of this app for an agent working without its pages. Says which skill or tool answers each goal (what to do next, keywords, content plan, writing a page, a weak page, rankings, traffic, site health, AI assistants, competitors, local, reports, a new project), the order the work goes in, what each page of the app shows and which tools read or change it, what runs on its own, what only the app can do, and the money, question and approval rules. Use it first when the user asks what to do, how something works, or names a goal rather than a step."
+description: "SEOStudio: The map of this app for an agent working without its pages. Says which skill or tool answers each goal (what to do next, keywords, content plan, writing a page, a weak page, rankings, traffic, site health, AI assistants, competitors, local, reports, a new project), the order the work goes in, what each page of the app shows and which tools read or change it, what runs on its own, what only the app can do, and the money, question and approval rules. Use it when the user asks what to do next, how something works, or names a goal rather than a step."
 metadata:
+  role: map
   title: Start here
   summary: "Start here: what this app can do for your site and where to begin"
   inputs:
@@ -51,6 +52,7 @@ rules win over this page.
 | A new site | `projects_create`, the `project-profile` skill, then the `seo-plan` skill |
 | Change the site's profile, markets or competitors | the `project-profile` skill (`projects_update`) |
 | Keywords | the `keyword-research` skill |
+| How big is my market, who gets the clicks? | `seo_market_get` (free, after keyword research) |
 | The main keyword | the `pick-main-keyword` skill |
 | Do AI assistants mention us? | `seo_ai_visibility_get` (free); a new run is the `ai-visibility` skill |
 | Plan content, silos, internal links | the `content-planner` skill |
