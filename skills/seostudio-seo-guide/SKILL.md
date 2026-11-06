@@ -48,11 +48,11 @@ rules win over this page.
 
 | The user asks | Start with |
 | --- | --- |
-| What should I do next? | `seo_actions_list` (the Dashboard's Do next) and `seo_plan_get`. A plan step open: the `seo-plan` skill; plan done: the top Do next row, else the planner's next page to write |
+| What should I do next? | `seo_overview_get`: every area in one read, with the app's suggestions (Do next) and their facts. The suggestions are one input; weigh them against the data and pick the step. A plan step to run: the `seo-plan` skill |
 | A new site | `projects_create`, the `project-profile` skill, then the `seo-plan` skill |
 | Change the site's profile, markets or competitors | the `project-profile` skill (`projects_update`) |
 | Keywords | the `keyword-research` skill |
-| How big is my market, who gets the clicks? | `seo_market_get` (free, after keyword research) |
+| How big is my market, how do I compare with my competitors? | `seo_competitors_get` (free, after keyword research) |
 | The main keyword | the `pick-main-keyword` skill |
 | Do AI assistants mention us? | `seo_ai_visibility_get` (free); a new run is the `ai-visibility` skill |
 | Plan content, silos, internal links | the `content-planner` skill |
@@ -105,8 +105,9 @@ passing). Keep pages that matter current: a meaningful update counts, a cosmetic
 ## The app's pages and their tools
 
 - **Dashboard** (Do next, Performance, Changes, Indexing, Page speed, a page's panel). Read:
-  `seo_actions_list`, `seo_dashboard_get`, `search_performance_get` (`strikingDistance`: quick
-  wins), `seo_pages_get`, `seo_indexing_get`, `seo_site_health_get`, `web_analytics_get`. Change:
+  `seo_overview_get` (every area at once), `seo_actions_list`, `seo_dashboard_get`,
+  `search_performance_get` (`strikingDistance`: quick wins), `seo_pages_get`, `seo_indexing_get`,
+  `seo_site_health_get`, `web_analytics_get`. Change:
   `seo_actions_update` (done, snooze, dismiss), `seo_page_notes_add`, `seo_page_changes_record`
   (record a change made in the site's files, or `undo` one), `seo_dashboard_update` (saved views,
   headline tiles, brand terms), `seo_indexnow_update`.
