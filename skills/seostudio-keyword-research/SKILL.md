@@ -303,8 +303,8 @@ Use the same market and language. Each of these is the user's own request; never
   `"dormant"`, the `keywords` and a `reason`. For targeting, `estimate: true` first.
 - **"Check the waiting keywords" / "Re-rank":** `seo_keywords_update` with `state: "check"` /
   `"rerank"`, `estimate: true` first.
-- **"Start over":** `seo_keywords_update` with `state: "start_over"` and a `reason`; the tool
-  itself asks the user to approve, so do not ask first. Data already bought stays. When the request says the page already cleared the research, do not start over
+- **"Start over":** `seo_keywords_update` with `state: "start_over"` and a `reason`. Data already
+  bought stays, and `state: "restore"` brings the cleared research back for 30 days. When the request says the page already cleared the research, do not start over
   again: run the steps from the start.
 - **A note on a keyword:** pass `note` with `keywords` only when the user asked. Read and honour the
   notes `seo_keywords_list` returns.

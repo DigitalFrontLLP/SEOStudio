@@ -255,9 +255,8 @@ stands.
       true. Then `seo_content_writer_update` `output: { kind: "folder", path }`, with `liveUrl` once it
       is deployed.
     - **WordPress:** `seo_content_writer_build` `mode: "publish"`. A new page lands as a WordPress draft
-      unless the project allows auto-publish; a live page is updated in place after the user approves
-      (`approval_declined`: they said no, leave it). `approval_required`: ask the user in the chat, then
-      call again with its `approval_code` value.
+      unless the project allows auto-publish; a live page is updated in place, and the answer's
+      `changeId` takes it back (`seo_page_changes_record` `undo`) when the user asks.
     - **Copy mode** (a new page): the page stays on the Content writer page for the user to copy; say so in one line,
       and that connecting WordPress or the site's code lets you publish it.
     - Then at most two lines: the score, where the page went, and the open "needed from you" items.

@@ -32,12 +32,12 @@ rules win over this page.
 - **Market and language.** The tools have NO default market or language: take both from the
   project (`projects_get`).
 - **The user's own site.** Never change or publish anything on it
-  unless the user asked for that specific change. SEO-critical changes (indexing, canonicals,
-  redirects, page addresses, unpublishing, overwriting a live page) wait for their OK:
-  - In the app's chat the user answers an Approve card; elsewhere your client may ask the user
-    itself.
-  - `status: "approval_required"`: nothing changed yet. Show its `changes`, ask in the chat, and
-    only on a yes send the same call again with its `approval_code` value. `approval_declined`: they said no.
+  unless the user asked for that specific change. Before an SEO-critical change (indexing,
+  canonicals, redirects, page addresses, unpublishing, overwriting a live page), check with the user
+  in one question, unless they said not to ask.
+- **A call that waits for the user** answers `status: "approval_required"`: nothing changed yet.
+  Show its `changes`, ask in the chat, and only on a yes send the same call again with its
+  `approval_code` value. `approval_declined`: they said no.
 - **Deletes.** Before deleting something the user may want to keep, confirm with one question.
 - **Numbers come from the tools.** Never estimate the clicks a change will bring.
 - **Reports.** Any result the user wants to read, print or share as a report: the `seo-report`
