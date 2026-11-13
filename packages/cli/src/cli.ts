@@ -213,7 +213,7 @@ async function auditSaved(command: Extract<Command, { kind: "audit" }>, io: CliI
 			? "The audit is running on SEOStudio; it shows in a few minutes."
 			: `Health score: ${result.healthScore === null ? "-" : String(result.healthScore)}. Open issues: ${result.open === null ? "-" : String(result.open)}. Fixed: ${result.fixed === null ? "-" : String(result.fixed)}.`,
 		...(result.capped ? ["The crawl stopped at your plan's pages per run."] : []),
-		`See it in SEOStudio: ${keyed.origin}/seo/site-audit`
+		`See it in SEOStudio: ${keyed.origin}/site-audit`
 	];
 	io.out(`${lines.join("\n")}\n`);
 	return 0;
