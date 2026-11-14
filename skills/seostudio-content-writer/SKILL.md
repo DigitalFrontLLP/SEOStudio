@@ -40,8 +40,8 @@ to the page as a version.
 ## How you talk to the user
 
 - **Questions go through the question tool** your runtime offers (`ask_user`, or your own), likely
-  answers as options, the recommended one first (none when only the user knows). One at a time; never a
-  question inside prose.
+  answers as options, the recommended one first, its label ending "(Recommended)" (none when only the user
+  knows). One at a time; never a question inside prose.
 - **Short.** Say what you will do in one line. Say nothing between repeated calls, while you research or
   while you write. Never restate a tool's answer or list your checks.
 - **Prices are money.** Say a cost in dollars (`$0.40`), the user's money is their balance (never
@@ -189,8 +189,8 @@ stands.
    - The meta title, the meta description and the H1 (on a home page also the hero line): write each
      from the words the comparison pages share in theirs, the higher-ranking pages weighing more, and
      the page's own important searches. Offer 2-3 options of each with the question tool, your pick
-     first and marked recommended, plus "Write my own" as an option of each (even when the tool adds
-     its own free-text choice); the user chooses. The question's text opens with the comparison set.
+     first, its label ending "(Recommended)", plus "Write my own" as an option of each (even when the
+     tool adds its own free-text choice); the user chooses. The question's text opens with the comparison set.
      Skip this when the user said not to ask.
    - Then, before you write, ask "Write it with this outline (Recommended)" / "Change it" as its own
      question, its text the outline only (no length, plan or sources): each heading, what its section
@@ -395,9 +395,8 @@ beside it.
   while the page is live; the settings and authors stay.
 - **"Use / don't use this page for comparison"**: `seo_content_writer_build` `mode: "lock"` with
   `include` or `exclude`. Free; the choice sticks. Say the `effect` in one line.
-- **"Set the pass bar to N" / "Publish live on your own" / "Let me check the comparison pages" / "Let me
-  approve outlines"**: `seo_content_writer_update` `settings` (`passBar` at most 100, `autoPublish`,
-  `comparisonReview`, `outlineApproval`).
+- **"Set the pass bar to N" / "Publish live on your own" / "Let me check the comparison pages"**:
+  `seo_content_writer_update` `settings` (`passBar` at most 100, `autoPublish`, `comparisonReview`).
 - **"Add an author"**: `seo_content_writer_update` `authors.upsert` with the name, a short bio, a photo
   address and profile links the user gives you; real people only.
 
