@@ -17,6 +17,8 @@ metadata:
 
 # Get links from sources
 
+This is a mandatory procedure: follow every step in order; add no steps of your own; ask the user where it says to ask.
+
 ## Goal
 
 The user's site is listed on the sources that fit it, each submitted once, from the user's own

@@ -21,6 +21,8 @@ metadata:
 
 # AI visibility
 
+This is a mandatory procedure: follow every step in order; add no steps of your own; ask the user where it says to ask.
+
 ## Goal
 
 Ask the AI assistants the questions a real buyer asks, then tell the user how often each one cites,

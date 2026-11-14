@@ -13,6 +13,8 @@ metadata:
 
 # SEO plan
 
+This is a mandatory procedure: follow every step in order; add no steps of your own; ask the user where it says to ask.
+
 ## Goal
 
 The user knows where their site stands in the four-step plan and does ONE thing next. This skill

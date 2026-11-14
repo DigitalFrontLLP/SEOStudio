@@ -17,6 +17,8 @@ metadata:
 
 # SEO report
 
+This is a mandatory procedure: follow every step in order; add no steps of your own; ask the user where it says to ask.
+
 ## Goal
 
 One short report, saved to the project, that a reader who never opens the app understands. Chat

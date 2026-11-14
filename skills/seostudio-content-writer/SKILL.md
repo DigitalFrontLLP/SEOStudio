@@ -25,6 +25,8 @@ metadata:
 
 # Content writer
 
+This is a mandatory procedure: follow every step in order; add no steps of your own; ask the user where it says to ask.
+
 ## Goal
 
 One page the user does not need to edit: it answers its search better than the pages Google ranks now,
@@ -108,16 +110,20 @@ stands.
    searches, the comparison pages and what they share, people-also-ask, AI answers, the internal links
    to place, and `current`: what the page scores now and its `mustFix`). Keep its `runId`. Then
    `view: "draft"` for the authors, the settings and an earlier version.
-3. **Lock the comparison set** when the brief says none is locked: `seo_content_writer_build`
+3. **The comparison set.** Lock it first when the brief says none is locked: `seo_content_writer_build`
    `mode: "lock"`, `estimate: true`.
    - When it costs anything (`credits`, plus `fallbackReads`, `namedThings` and `topicChecks` as
      "up to"), say in one line "Locking the comparison pages, ~$X." and lock them.
    - Call again while `pending` is above 0, then read the brief again (with `runId`).
-   - `review: "ask"`: list the chosen pages (position, site, kind) and ask "Use these (Recommended)" /
-     "Let me change them"; then lock again with `include` or `exclude`. `review: "auto"`, or no user
-     can answer: never stop.
+   - Ask "Use these (Recommended)" / "Let me change them", with the set written as in step 8, when
+     `review` is `"ask"`, `set.confidence` is
+     not `normal`, or a picked page's `type` is not the set's `resultType` (`filled`); then lock again
+     with `include` or `exclude`. No user can answer such a set: stop and say why.
 4. **Find where the page lives** (the table above). **Improving a live page** (`action: "optimise"` or a
    live `url`):
+   - Without a focus, ask once before you research: "Improve the page" / "Rewrite it from zero" (no
+     recommendation: only the user knows). A rewrite runs as "Rewrite this page" below. No one can
+     answer: improve.
    - Score it as it stands first (`seo_content_score_get` with its `url`, or its source as above): that keeps
      it once as the page's original, so what a rewrite takes out is shown.
    - Keep its address, its slug and what still serves the reader; the change can be small or a full
@@ -169,6 +175,9 @@ stands.
 8. **Outline.** The H1 and H2-H4 from what the page type needs plus what most locked pages share, in the
    order a reader needs them. A page of the same type already ready or published (`view: "pages"`):
    read it and keep its layout.
+   - **The comparison set as the user sees it:** Google's first page for the main keyword, one line per
+     result (position, site, type), marked picked or left out and why (`set.pages`, `set.dropped` with
+     its `reason`).
    - **Audit it against the comparison set** before you write: rate the locked pages as a set (what
      most of them cover) and your outline 1-10 each on search intent, depth and completeness, factual
      accuracy, practical usefulness, original information, readability, trust and sourcing, and SEO
@@ -177,15 +186,25 @@ stands.
      choose-by-need table, a worked example, an honest order), never length for its own sake; never
      narrow its scope because of one narrow page; a template stays one block the reader can copy.
      Research the facts it needs; never invent experience or data.
-   - With `outlineApproval` set and a user who can answer, ask first ("Write it with this outline
-     (Recommended)" / "Change it").
+   - The meta title, the meta description and the H1 (on a home page also the hero line): write each
+     from the words the comparison pages share in theirs, the higher-ranking pages weighing more, and
+     the page's own important searches. Offer 2-3 options of each with the question tool, your pick
+     first and marked recommended, plus "Write my own" as an option of each (even when the tool adds
+     its own free-text choice); the user chooses. The question's text opens with the comparison set.
+     Skip this when the user said not to ask.
+   - Then, before you write, ask "Write it with this outline (Recommended)" / "Change it" as its own
+     question, its text the outline only (no length, plan or sources): each heading, what its section
+     covers, and where the keywords, images and internal links go. Skip it when the user said not to
+     ask: write the outline to the user before you write.
 9. **Write it where it lives** with the strongest model your runtime has, from ledger facts only, by the
    writing rules below; the meta title, meta description and slug too.
    - Before you score, read every sentence that names a source ("X says", "per X") or says "every",
      "all", "only" or a superlative: its fact's claim must say the same, else reword it.
    - Pick the author (ask once when the project has several; none means the site's name).
    - Site code: keep the page's layout and components; change only its words and the parts the outline
-     needs.
+     needs. Read the rendered page first: a component that shows its own title (a grid, a card list, a
+     widget) already heads its section; never add a heading that repeats it. Keep the hero as short as
+     the site's design has it; new hero words only from options the user picks.
    - A live page on WordPress: send it to `seo_content_score_get` (step 10), never as a draft.
    - A new page on WordPress or in copy mode: save `seo_content_writer_update` `draft` (`markdown`, `metaTitle`,
      `metaDescription`, `slug`, `authorId`, `highAuthority`, `entities`).
@@ -198,6 +217,8 @@ stands.
     - Never add a fact outside the ledger to pass a check. `terms_band` is a nudge: move a term toward
       its `range` only where the page reads better for it; never swap in synonyms, repeat the keyword,
       stuff or list terms. The AI-vocabulary and readability limits always win.
+    - Never add words, filler or repeats, and never cut a required keyword use, to move a band or the
+      density; when only that would pass, the check cannot be met: say which and stop.
     - Repeat until `hardFailures` is empty and `overall` reaches `passBar` (`passed` turns true only
       once the judge has run). When a check cannot be met (the ledger lacks the facts, the range
       conflicts with the page type), say in one line which and why, and stop.
@@ -260,6 +281,8 @@ stands.
     - **Copy mode** (a new page): the page stays on the Content writer page for the user to copy; say so in one line,
       and that connecting WordPress or the site's code lets you publish it.
     - Then at most two lines: the score, where the page went, and the open "needed from you" items.
+      When no question this run showed the comparison set or the outline, add them here as step 8
+      writes them (beyond the two lines).
       For a live page add: `Google shows it once it re-reads the page (known pages about every 30 days); its effect is judged from that day.`
     - End the run: `seo_content_writer_update` `stopRun: true` (with `pageId` and `runId`).
     - When the page is live, ask once: "Add its internal links now (Recommended)" / "Later"; on the
@@ -277,6 +300,7 @@ stands.
 - **Each fact and explanation once**; a later section refers back instead of repeating it (twice only
   where the reader needs it again, such as the verdict).
 - **Specifics over vague words:** the exact number, name or code, never "many", "some" or "a lot".
+- **Numbers as digits** (7 days, 3 cases), unless the site's own style spells them.
 - **Facts that last:** a figure that changes within days (this week's items, a live price) is a dated
   example, never the page's biggest block.
 - An FAQ holds only questions the body does not answer already. A chart adds a view the text cannot
@@ -294,6 +318,8 @@ stands.
 - **A claim is exactly as wide as its proof.** A fact about one thing is never said of a group; your
   own test proves only what a control rules out. Call each thing by its official name, the same
   everywhere.
+- **The user's own rules.** A rule, limit or term of the user's own product comes from their site, their
+  code or their own words in the ledger. One you only infer is a `needs` item, never stated.
 - **True, not just quoted.** Each fact names its exact subject (which offer, plan, product, case or
   variant) and is used only about it. When sources disagree, first check whether they describe
   different things. Check every option the same way, on the same kind of page. A "no", "not" or "only"

@@ -21,6 +21,8 @@ metadata:
 
 # Content planner
 
+This is a mandatory procedure: follow every step in order; add no steps of your own; ask the user where it says to ask.
+
 ## Goal
 
 The user knows which pages their site needs, how they hang together, what to write or improve first and

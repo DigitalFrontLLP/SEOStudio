@@ -17,6 +17,8 @@ metadata:
 
 # Find more link sources
 
+This is a mandatory procedure: follow every step in order; add no steps of your own; ask the user where it says to ask.
+
 ## Goal
 
 New places that fit the user's site and can give it a free link, each one opened and checked in

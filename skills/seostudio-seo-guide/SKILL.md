@@ -14,6 +14,8 @@ metadata:
 
 # SEO guide
 
+This is a mandatory procedure: follow every step in order; add no steps of your own; ask the user where it says to ask.
+
 ## Goal
 
 Answer the user's goal the way the app would, with this app's tools. This page is a map: it picks

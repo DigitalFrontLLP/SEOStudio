@@ -21,6 +21,8 @@ metadata:
 
 # Pick main keyword
 
+This is a mandatory procedure: follow every step in order; add no steps of your own; ask the user where it says to ask.
+
 ## Goal
 
 Exactly one keyword ends in the `main` state for the project's market and language, picked BY THE

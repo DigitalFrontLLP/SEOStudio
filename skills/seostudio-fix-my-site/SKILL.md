@@ -17,6 +17,8 @@ metadata:
 
 # Fix my site
 
+This is a mandatory procedure: follow every step in order; add no steps of your own; ask the user where it says to ask.
+
 ## Goal
 
 The problems the app found on the user's own site get fixed. You make every technical change you

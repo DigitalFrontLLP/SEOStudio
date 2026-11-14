@@ -25,6 +25,8 @@ metadata:
 
 # Keyword research
 
+This is a mandatory procedure: follow every step in order; add no steps of your own; ask the user where it says to ask.
+
 ## Goal
 
 Collect every keyword the site could use, price them and read their Google results. The model answers

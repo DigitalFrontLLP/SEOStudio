@@ -17,6 +17,8 @@ metadata:
 
 # Link outreach
 
+This is a mandatory procedure: follow every step in order; add no steps of your own; ask the user where it says to ask.
+
 ## Goal
 
 A few well-chosen sites pitched with short, honest emails the user approved, every send and reply

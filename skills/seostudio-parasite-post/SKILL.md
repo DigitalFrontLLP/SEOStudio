@@ -17,6 +17,8 @@ metadata:
 
 # Write a post on another site
 
+This is a mandatory procedure: follow every step in order; add no steps of your own; ask the user where it says to ask.
+
 ## Goal
 
 A post the user can paste on a big site that already ranks for their search. It answers the
