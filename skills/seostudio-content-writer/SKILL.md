@@ -147,10 +147,10 @@ stands.
    - For a business the page sends readers to: who runs it, its licence or regulator where its field has
      one, how payouts or refunds work, its rating on an independent review site, and where to get help
      when the topic carries a risk.
-   - Write each fact to the ledger as you go: `seo_content_writer_update` `facts` (claim, subject, the
-     source's exact words, the URL, the day, status; a value's `attribute` and `value`; `kind` money,
-     terms or stat; the source page's own date as `published`), or `factChanges` by id. A fact you
-     cannot verify stays `unverified` and is never stated as true.
+   - Write each fact to the ledger as you go: `seo_content_writer_update` `factChanges.upsert` (claim,
+     subject, the source's exact words, the URL, the day, status; a value's `attribute` and `value`;
+     `kind` money, terms or stat; the source page's own date as `published`); change or `remove` one by
+     its id. A fact you cannot verify stays `unverified` and is never stated as true.
 6. **Unique angle.**
    - Think what only the user can bring (a result, a number, a method, an opinion, a case) and ask for
      it, offering the angles you can produce yourself (a live comparison, statistics from data you can
