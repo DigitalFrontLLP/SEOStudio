@@ -115,10 +115,12 @@ stands.
    - When it costs anything (`credits`, plus `fallbackReads`, `namedThings` and `topicChecks` as
      "up to"), say in one line "Locking the comparison pages, ~$X." and lock them.
    - Call again while `pending` is above 0, then read the brief again (with `runId`).
+   - The set holds only pages of this page's type and search intent. Check each page's `type` against its
+     title and text: `exclude` a page of another type, `include` a result of this type that was left out.
    - Ask "Use these (Recommended)" / "Let me change them", with the set written as in step 8, when
-     `review` is `"ask"`, `set.confidence` is
-     not `normal`, or a picked page's `type` is not the set's `resultType` (`filled`); then lock again
-     with `include` or `exclude`. No user can answer such a set: stop and say why.
+     `review` is `"ask"` or `set.confidence` is not `normal`; then lock again with `include` or
+     `exclude`. No user can answer such a set: stop and say why.
+   - When the brief says Google ranks fewer than two pages of this type, ask its keep-or-switch question.
 4. **Find where the page lives** (the table above). **Improving a live page** (`action: "optimise"` or a
    live `url`):
    - Without a focus, ask once before you research: "Improve the page" / "Rewrite it from zero" (no
