@@ -77,9 +77,9 @@ recorded on the prospect, and follow-ups sent when they are due. Quality over vo
    why their readers would care, no flattery or filler. The opt-out line is added for you.
    - Affiliate or listing site: ask for a place in their list (free, for an affiliate share, or their
      listing price), as people who know how listings work.
-   - General site: give the URL of the page that links to the competitors and ask for a link on that
-     page, free first, else their price. If that page cannot change (someone paid for it), ask for a
-     new guest post and its price instead.
+   - General site: give the URL of the page that links to the competitors and ask first how a dofollow
+     link to the user's page can be added on that page, or what it costs. Never ask for it free. In the
+     same email, offer a new guest post and ask its price, in case that page cannot change.
    - Never offer a link from the user's site in return. Never agree to a price: pass any price to
      the user.
    Sending through the user's email tool: also draft both follow-ups now (see below).
@@ -105,7 +105,7 @@ For a campaign or cold-email tool the user has (Warmbly or any other, over its M
 - Per row, create or update the tool's contact (email, name, the domain as company) with the row's
   `id`, `subject`, `body` and the two follow-ups in custom fields. The campaign's sequence has three
   plain-text steps: the first email (`subject` and `body`, opt-out line included), follow-up 1 after
-  3 days, follow-up 2 after 4 more days. Both follow-ups go as replies in the same thread, and the
+  5 days, follow-up 2 after 7 more days. Both follow-ups go as replies in the same thread, and the
   sequence stops for a contact who replies or unsubscribes.
 - Daily sends: when the tool has a ramp, start at 1 a day and add 1 a day up to 5 a day, unless the
   user chose other numbers. Leave the campaign a draft; the user starts it.
