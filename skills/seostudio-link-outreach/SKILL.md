@@ -64,16 +64,33 @@ recorded on the prospect, and follow-ups sent when they are due. Quality over vo
 3. **Find contacts.** `find_contact` with their `ids` (reads each site's own pages). No address
    shown: check the site's contact page yourself with your web tools; record one you find with
    `contactName`, `contactEmail`, `contactPage`, else skip the site (`dismiss`).
-4. **Pick the page to pitch.** The user's page that best fits the site's page and its `why`.
+4. **Know the site and its page.** Open the site and decide its kind:
+   - **Affiliate or listing site**: it lists, ranks or reviews sites like the user's and earns from
+     them (affiliate or referral links, paid placements). It knows the deal.
+   - **General site** (news, magazine, big blog): only when it is NOT an affiliate or listing site.
+     A list on it linking to competitors is often a guest post its owner may not even know about;
+     a competitor's affiliate or referral code in those links means someone bought that post.
+   Find the exact page on the site that links to the competitors (its URL: from the prospect's `why`,
+   or search the site for a competitor's name with your web tools), preferring one that ranks on
+   Google for the user's searches. Then pick the user's page that best fits it.
 5. **Draft.** `draft` with `id`, `to`, `subject`, `body`: two to five short sentences, one clear ask,
    why their readers would care, no flattery or filler. The opt-out line is added for you.
+   - Affiliate or listing site: ask for a place in their list (free, for an affiliate share, or their
+     listing price), as people who know how listings work.
+   - General site: give the URL of the page that links to the competitors and ask for a link on that
+     page, free first, else their price. If that page cannot change (someone paid for it), ask for a
+     new guest post and its price instead.
+   - Never offer a link from the user's site in return. Never agree to a price: pass any price to
+     the user.
+   Sending through the user's email tool: also draft both follow-ups now (see below).
 6. **Approve, send, record.** Put the whole draft (to, subject, body) in the question, then ask:
    "Approve" / "Change it" / "Skip this site". On approve: `approve`, give the user the `mailto`
    link (or send with their mail tools). Once sent: `set_stage` `stage: "contacted"`, with
    `channel: "agent"` only when you sent it. Sending many at once: see "Through the user's email
    tool" below.
-7. **Follow up when due.** For each prospect in `due`: draft a short follow-up (new value, never a
-   guilt line), approve, send, record with `set_stage` `contacted`. At most two follow-ups.
+7. **Follow up when due** (emails sent by hand; a prospect in an email tool's sequence gets its
+   follow-ups from the sequence). For each prospect in `due`: draft a short follow-up (new value,
+   never a guilt line), approve, send, record with `set_stage` `contacted`. At most two follow-ups.
 8. **Replies.** When the user shares a reply: `log_reply` with its `text`, then draft an answer for
    approval (step 6). Agreed terms: `set_stage` `negotiating`. Link placed: `set_stage` `live` with
    `linkUrl`; the link check confirms it.
@@ -82,12 +99,18 @@ recorded on the prospect, and follow-ups sent when they are due. Quality over vo
 
 For a campaign or cold-email tool the user has (Warmbly or any other, over its MCP or API):
 
+- Each prospect gets the first email AND two follow-ups, approved together: put all three in the
+  step 6 question. Each follow-up is two or three sentences with new value, never a guilt line.
 - Approve each draft, then read `seo_backlinks_get` `view: "export"` (or `format: "csv"`).
 - Per row, create or update the tool's contact (email, name, the domain as company) with the row's
-  `id`, `subject` and `body` in custom fields. One plain-text step made of those two fields: the
-  body is the whole email, opt-out line included. Leave the campaign a draft; the user starts it.
-- Once sent: one `set_stage` `contacted` with all the sent `ids`. Follow-ups come from step 7 and
-  go out the same way.
+  `id`, `subject`, `body` and the two follow-ups in custom fields. The campaign's sequence has three
+  plain-text steps: the first email (`subject` and `body`, opt-out line included), follow-up 1 after
+  3 days, follow-up 2 after 4 more days. Both follow-ups go as replies in the same thread, and the
+  sequence stops for a contact who replies or unsubscribes.
+- Daily sends: when the tool has a ramp, start at 1 a day and add 1 a day up to 5 a day, unless the
+  user chose other numbers. Leave the campaign a draft; the user starts it.
+- Once sent: one `set_stage` `contacted` with all the sent `ids`; record each follow-up the tool
+  sent the same way, so the prospect's dates stay right.
 - Replies and unsubscribes: read them in the tool, match each by the contact's stored `id` (or
   `seo_backlinks_get` `q` with the address), then step 8; an unsubscribe is `set_stage`
   `not_interested` with `reason: "unsubscribed"`.
