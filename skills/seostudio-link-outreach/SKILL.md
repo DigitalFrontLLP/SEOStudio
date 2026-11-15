@@ -59,11 +59,14 @@ recorded on the prospect, and follow-ups sent when they are due. Quality over vo
 1. **Read the project.** `projects_get` (what it sells, to whom, its pages and competitors), then
    `seo_backlinks_get` `view: "outreach"`. Due prospects first: go to step 7.
 2. **Find prospects.** `seo_backlinks_update` `action: "find_prospects"`, `estimate: true`; say the
-   price; buy with `quotedCredits`. Show the best few (site, why) and ask which to add; add them with
-   `find_prospects` again, `pick` set to their sites.
+   price; buy with `quotedCredits`. Add every site that links to a competitor (a nofollow link still
+   counts): show them (site, why), ask which to leave out, and add the rest with `find_prospects`
+   again, `pick` set to their sites. Never drop a site yourself for fit, audience, nofollow links or a
+   no-paid-posts policy; sites sharing an owner are pitched separately when their addresses differ.
 3. **Find contacts.** `find_contact` with their `ids` (reads each site's own pages). No address
    shown: check the site's contact page yourself with your web tools; record one you find with
-   `contactName`, `contactEmail`, `contactPage`, else skip the site (`dismiss`).
+   `contactName`, `contactEmail`, `contactPage`, else skip the site (`dismiss`). Skip an address only
+   when mail cannot reach it (no mail server for its domain, or the server rejects the address).
 4. **Know the site and its page.** Open the site and decide its kind:
    - **Affiliate or listing site**: it lists, ranks or reviews sites like the user's and earns from
      them (affiliate or referral links, paid placements). It knows the deal.
@@ -75,10 +78,16 @@ recorded on the prospect, and follow-ups sent when they are due. Quality over vo
    Google for the user's searches. Then pick the user's page that best fits it.
 5. **Draft.** `draft` with `id`, `to`, `subject`, `body`: two to five short sentences, one clear ask,
    why their readers would care, no flattery or filler. The opt-out line is added for you.
+   - Subject: one word, in the site's language: "Partnership" for an affiliate or listing site,
+     "Collaboration" for a general site.
+   - The first email holds NO link and no web address, not even a bare domain (mail apps turn a domain
+     into a link, which sends a first email to spam): write the user's brand name alone, name a page by
+     its exact title, and say "your site" for theirs. The user's link and the page's URL go in
+     follow-up 1.
    - Affiliate or listing site: ask for a place in their list (free, for an affiliate share, or their
      listing price), as people who know how listings work.
-   - General site: give the URL of the page that links to the competitors and ask first how a dofollow
-     link to the user's page can be added on that page, or what it costs. Never ask for it free. In the
+   - General site: name the page that links to the competitors by its title and ask first how a
+     dofollow link to the user's page can be added on that page, or what it costs. Never ask for it free. In the
      same email, offer a new guest post and ask its price, in case that page cannot change.
    - Never offer a link from the user's site in return. Never agree to a price: pass any price to
      the user.
@@ -101,6 +110,7 @@ For a campaign or cold-email tool the user has (Warmbly or any other, over its M
 
 - Each prospect gets the first email AND two follow-ups, approved together: put all three in the
   step 6 question. Each follow-up is two or three sentences with new value, never a guilt line.
+  Follow-up 1 carries the links the first email left out: the page's URL and the user's page.
 - Approve each draft, then read `seo_backlinks_get` `view: "export"` (or `format: "csv"`).
 - Per row, create or update the tool's contact (email, name, the domain as company) with the row's
   `id`, `subject`, `body` and the two follow-ups in custom fields. The campaign's sequence has three
