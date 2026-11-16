@@ -1,6 +1,6 @@
 ---
 name: seostudio-project-profile
-description: "SEOStudio: Write a project's website profile - what the site is, who it is for, how it speaks, which countries it sells into - and its competitor list, by reading the site's home page. Use right after a project is created, when projects_get shows no description, audience or tone, or when the user asks to change one of them (\"more playful tone\", \"target Germany too\", \"drop competitor X\")."
+description: "SEOStudio: Use when a project was just created, when projects_get shows no description, audience or tone, or when the user asks to change one of them (\"more playful tone\", \"target Germany too\", \"drop competitor X\"). Writes a project's website profile - what the site is, who it is for, how it speaks, which countries it sells into - and its competitor list, by reading the site's home page."
 metadata:
   title: Site profile
   summary: Write your site's profile and list its competitors
@@ -30,7 +30,10 @@ THIS business" against this profile.
 - Ask every question with your question tool (`ask_user`, or your runtime's own), one at a time,
   the recommended answer first. Never end on a question written in prose.
 - When you must stop, say in one line what is missing, then ask for it.
-- Be short: the finish lines only, never a restatement of what a tool returned.
+- Be short: outside the check-in, never restate what a tool returned.
+- **Check-ins.** At a step marked **Check in**, show what you set or plan in a short list, then ask
+  with the question tool: "Looks good (Recommended)" / "Change something", or the choices the step
+  names. When the user said not to ask, or no one can answer (an automation run), go on without it.
 - **Money:** say nothing about cost unless a tool's answer reports a charge; then say it in dollars
   as its `cost` words it. The user's money is their balance, never "credits".
 
@@ -126,7 +129,7 @@ THIS business" against this profile.
    (bare domains; a chain's area `page` when it applies).
    - The platform checks each competitor's estimated organic traffic in the main market, orders the
      list by it and leaves out those under 100 visits a month (`competitorRanking`, with
-     `competitorRanking.dropped`, which your summary names with its reason). Keep its order. Never
+     `competitorRanking.dropped`, which the check-in names with its reason). Keep its order. Never
      offer to buy competitor keyword lists for "exact traffic": it is the same estimate.
    - **`competitorsRefused` means NOTHING was saved** and the project keeps the list it had. Say its
      `message` in one line and offer "Try again" / "Later"; on "Try again" send the same `replace`
@@ -139,10 +142,15 @@ THIS business" against this profile.
 
 ## Finish
 
-Four lines: the description, the audience, the tone (with the markets recorded), and how many
-competitors were listed with the first five (or why the list was not saved). Say the user can
-remove any competitor that is not a direct one, then: **"Say what to change and I rewrite that
-field."**
+**Check in** with what you set:
+
+- the description, the audience and the tone, one line each;
+- the language, the market and the other markets;
+- the competitors, closest first, each with a few words on why it is a direct one (the first 15,
+  then how many more), and the ones dropped for low traffic in one line; or why the list was not
+  saved.
+
+On "Change something", ask what to change and follow Revision.
 
 ## Revision
 
@@ -164,6 +172,6 @@ hold.
   already written, in the same language, with one `projects_update`. Read the site only when the
   user asks or the fields it is written from are empty.
 - **"Rewrite the whole profile from the site"**: steps 2 to 5 again, with `competitors.replace`,
-  then the four-line finish.
+  then the Finish check-in.
 
 Confirm a revision in one line.

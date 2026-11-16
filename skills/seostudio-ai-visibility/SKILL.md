@@ -1,6 +1,6 @@
 ---
 name: seostudio-ai-visibility
-description: "SEOStudio: Ask AI assistants (ChatGPT, Gemini, Google AI Mode, Google AI Overviews) the questions a buyer asks, report how often they cite, name and recommend the site next to its competitors, and save the searches they run on the web as keywords. Use when the plan's next step is AI visibility, when the user asks whether AI assistants mention their site, or to continue or check a run."
+description: "SEOStudio: Use when the plan's next step is AI visibility, when the user asks whether AI assistants mention their site, or to continue or check a run. Asks AI assistants (ChatGPT, Gemini, Google AI Mode, Google AI Overviews) the questions a buyer asks, reports how often they cite, name and recommend the site next to its competitors, and saves the searches they run on the web as keywords."
 metadata:
   title: AI visibility
   summary: See how often AI assistants like ChatGPT mention and recommend your site
@@ -36,6 +36,9 @@ are saved as keywords (the "AI searches" tab), so the user can write pages for t
 - When you must stop, say in one line what is missing, then ask for it.
 - Be short: two or three lines before you spend, nothing between repeated calls, never a
   restatement of what a tool returned.
+- **Check-ins.** At a step marked **Check in**, show what you set or plan in a short list, then ask
+  with the question tool: "Looks good (Recommended)" / "Change something", or the choices the step
+  names. When the user said not to ask, or no one can answer (an automation run), go on without it.
 - Money is said in dollars from the tools' own figures (`totalCredits`, `costCredits`,
   `recheckCredits`): `~$0.40` before a call, the exact cost after. A figure a tool calls "up to" stays "up to". The user's money is their
   balance, never "credits".
@@ -81,9 +84,9 @@ are saved as keywords (the "AI searches" tab), so the user can write pages for t
 ## Steps
 
 1. **Read the project.** `projects_get`; take `market` and `language` from it.
-2. **Check the plan.** `seo_plan_get`. `blocked.reason` `no_profile`: run the `project-profile` skill now
-   without asking (`skill_get`), then check again. `no_website`: ask for the address and set it with
-   `projects_update`. `gate.searchConsole` false: say in one line that connecting Search Console
+2. **Check the plan.** `seo_overview_get` `parts: ["plan"]`. `plan.blocked.reason` `no_profile`: run the `project-profile` skill now
+   without asking first (`skill_get`; its check-in still runs), then check again. `no_website`: ask
+   for the address and set it with `projects_update`. `plan.gate.searchConsole` false: say in one line that connecting Search Console
    adds the questions people already search for. The `ai_visibility` step `done` or `stale`: say
    its `redoWarning` in one line.
 3. **Read what is there.** `seo_ai_visibility_get` with the pair.
@@ -140,7 +143,9 @@ are saved as keywords (the "AI searches" tab), so the user can write pages for t
    balance cannot cover the price: say both numbers and stop.
 7. **Show the set**, nothing in the chat before it: the prompt count and the price on the first
    line, then the prompts grouped under short category lines, each prompt on its own `- ` line,
-   shortened. End with a "Dropped:" list when prompts are retired. Then run them.
+   shortened. End with a "Dropped:" list when prompts are retired. A new set (`first_run` or
+   `adopt_framework`) is a **Check in**: "Run them (Recommended)" / "Change the prompts". Otherwise
+   run them.
 8. **Run.** `seo_ai_visibility_run` with the pair and the same `prompts`. While it answers
    `running`, wait `checkAgainInSeconds`, then read `seo_ai_visibility_get` with
    `include: ["run"]`. When the run is `done`, read `seo_ai_visibility_get` with
@@ -158,7 +163,7 @@ ONE question, nothing else in the chat. Its text starts with:
 Only when an engine in `crawlers.engines` has `blocked: true`, add one line naming the assistant,
 the page and the robots.txt rule that blocks it. A `training` crawler is never the reason.
 
-Then the next action from a fresh `seo_plan_get`: "<next step> now" / "Later". When `nextAction` is
+Then the next action from a fresh `seo_overview_get` `parts: ["plan"]`: "<next step> now" / "Later". When `plan.nextAction` is
 null, offer re-checks instead, unless `schedule.frequency` is already `weekly` or `monthly` (then
 ask nothing): add one line with the price per re-check and per month from `schedule`, and the
 options "Weekly (Recommended)" / "Monthly" / "Not now".

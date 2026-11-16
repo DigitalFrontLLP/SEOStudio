@@ -1,6 +1,6 @@
 ---
 name: seostudio-content-planner
-description: "SEOStudio: Turn a project's targeted keywords into a content plan - a tree of pages with one page per searcher need, the page type of each, the site's own pages to improve, what to write first and how to link the pages - by planning it like an experienced SEO from the project's keyword data, then hand over the next page to write. Use when the plan's next step is the content planner, when the user asks for a topical map, content silos, a content plan or internal links, or to place new searches, rebuild the map, or write or optimise the next page."
+description: "SEOStudio: Use when a project's targeted keywords should become a content plan (a tree of pages, one per searcher need, with each page's type, the site's own pages to improve, what to write first and how to link them), then the next page to write. Use when the plan's next step is the content planner, when the user asks for a topical map, content silos, a content plan or internal links, or to place new searches, rebuild the map, or write or optimise the next page."
 metadata:
   title: Content plan
   summary: Plan the pages your site needs, what to write first and how to link them
@@ -38,7 +38,10 @@ AI searches are added to the pages as questions when you finish.
   question tool), with the likely answers as options and the recommended one first (none when only the
   user knows the answer). One question at a time. Never put a question inside prose and stop.
 - **Short.** Say what you will do in one line. Say nothing between repeated calls and while you plan.
-  Never restate what a tool returned, never list your checks.
+  Outside a check-in, never restate what a tool returned; never list your checks.
+- **Check-ins.** At a step marked **Check in**, show what you set or plan in a short list, then ask
+  with the question tool: "Looks good (Recommended)" / "Change something", or the choices the step
+  names. When the user said not to ask, or no one can answer (an automation run), go on without it.
 - **Every price and balance is money.** A cost figure a tool answers (`credits` and the like) is said
   in dollars, `$0.40`, and the user's money is their balance, never credits.
   A price said before anything is spent is an estimate: write it `~$0.40`, never "about"; what
@@ -54,11 +57,11 @@ AI searches are added to the pages as questions when you finish.
 
 ## Tools and costs
 
-Writing the map is free: `projects_get`, `seo_plan_get`, `seo_content_plan_get`,
-`seo_content_plan_update` and `seo_content_plan_build` with `mode` `rebuild` or `finish` read and write
+Writing the map is free: `projects_get`, `seo_overview_get` `parts: ["plan"]`, `seo_content_plan_get`,
+`seo_content_plan_update`, `seo_content_plan_rebuild` and `seo_content_plan_finish` read and write
 this app's own rows. A finished map starts paid work on its own (its live pages scored, the site's pages
-read for the links): `mode: "finish"` with `estimate: true` names each part with its price.
-`seo_content_plan_build` with `mode: "links"` costs money too (it says its price with `estimate: true`). The tools have NO default market or language: take both from the project and
+read for the links): `seo_content_plan_finish` with `estimate: true` names each part with its price.
+`seo_content_plan_links_redo` costs money too (it says its price with `estimate: true`). The tools have NO default market or language: take both from the project and
 use the same pair in every call.
 
 ## How to plan the map
@@ -166,8 +169,8 @@ one question, every set follows one template, every hub is worth a visit, every 
 ## Steps
 
 1. **Read the project.** `projects_get`. Take `market` and `language` from it.
-2. **Check the plan.** `seo_plan_get`. If `blocked` is set, stop and say why, as the plan explains it.
-   If `nextAction` names a step that comes before the content planner and has never been done
+2. **Check the plan.** `seo_overview_get` `parts: ["plan"]`. If `plan.blocked` is set, stop and say why, as the plan explains it.
+   If `plan.nextAction` names a step that comes before the content planner and has never been done
    (`status: "not_started"`), say in one line that the map is built from the earlier steps and ask
    with the question tool: "<its title> now (Recommended)" / "Build the map now". On the first, start
    its `skill` (read with `skill_get`) and stop here; on the second, go on.
@@ -177,7 +180,7 @@ one question, every set follows one template, every hub is worth a visit, every 
    - `status: "building"` (a draft not finished): go to step 5 and continue it.
    - Finished, and `summary.unplaced` above 0: go to step 5 with `only: "unplaced"`.
    - Finished, nothing new: go to step 7.
-4. **Start a fresh draft.** `seo_content_plan_build` with `mode: "rebuild"`. It holds only the home page:
+4. **Start a fresh draft.** `seo_content_plan_rebuild`. It holds only the home page:
    plan the whole map again from scratch, as the first time.
 5. **Plan and write the map.** Read `seo_content_plan_get` with `view: "plan_input"` (page with `offset`
    until you have every row). Plan it by "How to plan the map", then write it with
@@ -207,8 +210,10 @@ one question, every set follows one template, every hub is worth a visit, every 
    (main keyword or group name), most important first. Code sorts by tier and keeps your order inside
    each; when a page's default tier misjudges it (a tool for other buyers), move it one tier with `tier`
    and a one-line `reason` (offer, lists, commercial, rival, informational: the home page, sales pages, tools and a review of the business are 'offer'; lists, alternatives and comparisons with the business 'lists'; a page about one other business 'rival'; guides and other comparisons 'informational'; the rest 'commercial'), a move further is refused. The home page stays first and a page follows its parent; a page you leave out is placed by its demand.
-6. **Finish.** `seo_content_plan_build` with `mode: "finish"` and `estimate: true`; when its
-   `startsPaid` lists paid work, say each price in one line. Then `mode: "finish"`. When it answers `refused` with
+6. **Finish.** `seo_content_plan_finish` with `estimate: true`. **Check in**
+   with the map: the page count, the home page and each hub with its page count, and the first five
+   pages to build; when its `startsPaid` lists paid work, add each price in one line. Then
+   `seo_content_plan_finish`. When it answers `refused` with
    `incomplete`, place the searches it lists or type the pages it lists, then finish again. When it
    answers `urlQuestion`, ask it once with the question tool, its options in order, and send the chosen
    option's `urlStructure` with `seo_content_plan_update`.
@@ -250,7 +255,7 @@ links page. Run these steps when the user asks about internal links, after step 
      task: read `seo_content_plan_get` with `view: "link_review"` and `pass: 2` (every item, paging with
      `limit` and `offset`), judge every item by the `brief` it returns, and answer with
      `seo_content_plan_update` `linkReviews: [{ id, pass: 2, add }]`. Never tell it your answers.
-   - Otherwise: price the app's built-in second review with `seo_content_plan_build`, `mode: "links"`,
+   - Otherwise: price the app's built-in second review with `seo_content_plan_links_redo`,
      `review: true`, `estimate: true`, say in one line `Second review of N links by the app's AI,
      ~$X.`, then call it again without `estimate`; the answers land in a minute.
 4. **Add them.** When `view: "links"` with `status: "needed"` lists links, ask ONE question:
@@ -275,8 +280,8 @@ Use the same market and language. Each of these is the user's own request.
 - **"Add a link from one page to another"**: `seo_content_plan_update` `addLinks: [{ from, to, anchor? }]`
   (full addresses). "Remove my link": `removeLinks: [{ from, to }]`. "Keep that link" (one listed as not
   in the map): `links: [{ linkId, accepted: true }]`.
-- **"Redo the internal links"** (or "remap the links"): price with `seo_content_plan_build`, `mode:
-  "links"`, `estimate: true`, say the price in one line, then run it. It works every
+- **"Redo the internal links"** (or "remap the links"): price with `seo_content_plan_links_redo`,
+  `estimate: true`, say the price in one line, then run it. It works every
   link out again from scratch: the user's links added or kept stay, their past approvals and dismissals
   are cleared. A redo with nothing changed costs nothing. The Internal links page's "Remap links"
   button does the same after its own confirm.
@@ -286,7 +291,7 @@ Use the same market and language. Each of these is the user's own request.
   Say in one line that it stays through rebuilds.
 - **"Score my pages"**: scores are automatic. Every live page is scored once the crawl has read it,
   charged to the balance; while the balance is short, scores wait for it. Only when the user wants a run
-  now: price with `seo_content_plan_build`, `mode: "score_pages"`, `estimate: true`, say the price
+  now: price with `seo_content_plan_pages_score`, `estimate: true`, say the price
   in one line, then run it.
 - **"Track my live pages"**: nothing to do. The main keyword of every live page is tracked in Rank
   tracking on its own; the first check lands within a day. Say so in one line.

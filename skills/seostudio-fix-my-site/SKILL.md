@@ -1,6 +1,6 @@
 ---
 name: seostudio-fix-my-site
-description: "SEOStudio: Fix the technical problems the app found on a project's own site - Site audit issues by priority, the links of the Internal links map and broken links - making every fix it can reach itself and checking with the user in the chat only before an SEO-critical change (indexing, canonicals, redirects, page addresses, unpublishing or deleting pages, a new link to another website), unless the user said not to ask. Every change of a page's words (its title, description, headings or text) it hands to the content writer. Use when the user presses Fix with AI on a technical problem, or asks to fix their site, its audit issues or its internal links."
+description: "SEOStudio: Use when the user presses Fix with AI on a technical problem, or asks to fix their site, its audit issues or its internal links - fixes Site audit issues by priority, the Internal links map's links and broken links on a project's site. Makes every fix it can reach itself and checks with the user in the chat only before an SEO-critical change (indexing, canonicals, redirects, page addresses, unpublishing or deleting pages, a new link to another website), unless the user said not to ask. Every change of a page's words (its title, description, headings or text) it hands to the content writer."
 metadata:
   title: Fix my site
   summary: Fix the technical problems found on your site
@@ -31,8 +31,11 @@ measured later.
 - Ask every question with your question tool (`ask_user`, or your runtime's own), one at a time,
   the recommended answer first. Never end on a question written in prose.
 - When you must stop, say in one line what is missing, then ask for it.
-- Be short. Say nothing between repeated calls; never restate what a tool returned or explain a fix
-  the user did not ask about.
+- Be short. Say nothing between repeated calls; outside a check-in, never restate what a tool
+  returned or explain a fix the user did not ask about.
+- **Check-ins.** At a step marked **Check in**, show what you set or plan in a short list, then ask
+  with the question tool: "Looks good (Recommended)" / "Change something", or the choices the step
+  names. When the user said not to ask, or no one can answer (an automation run), go on without it.
 - **Never a how-to.** When something cannot be changed on this site, say so in one line with the
   reason and what would make it possible. Never give steps, clicks or text to paste.
 
@@ -50,7 +53,7 @@ measured later.
 - **A page's words go to the content writer.** You never change a page's title, title in Google,
   meta description, H1, excerpt or text yourself, typos included. Read the
   `content-writer` skill (read it with `skill_get`) and follow it for that page, opening it with
-  `seo_content_writer_build` `mode: "open"` and what you found: a recommendation's `actionId`, or
+  `seo_content_writer_open` and what you found: a recommendation's `actionId`, or
   the page's `url` with the Site audit content `checks`. Do your own technical fixes first.
 - **The internal link map alone decides the links in a page's text.** Add its needed links, remove
   its `unmapped` ones, add no others.
@@ -72,7 +75,7 @@ measured later.
    collect all of the below, most important first. The `low_ctr` lens of `seo_dashboard_get` is a filter
    to explore, never a list of fixes: leave it out.
    - **A problem on a page** (`Problem:` with a rule id): fix it first, at its cause.
-     `seo_actions_list` with `pageKeys` set to the page returns that recommendation with its
+     `seo_dashboard_get` `view: "actions"` with `pageKeys` set to the page returns that recommendation with its
      searches and numbers.
      - `indexing_blocked`: remove what keeps the page out of search (noindex, a canonical elsewhere,
        robots.txt), unless it is meant to stay out.
@@ -105,8 +108,9 @@ measured later.
      Integrations page; then read `seo_wordpress_get` again) / "Not now".
    - Otherwise: say in one line that nothing can be changed from here, and that connecting
      WordPress or running this in the site's code makes it possible. Finish.
-4. **Ask ONE opening question:** `N fixes I will make, M need your OK.` "Start (Recommended)" /
-   "Not now". On "Not now", change nothing and finish.
+4. **Check in** once: the fixes in a short list by kind, each with its page count, then
+   `N fixes I will make, M need your OK.` "Start (Recommended)" / "Not now". On "Not now", change
+   nothing and finish.
 5. **Make the fixes that need no OK.** On WordPress, read each page with `seo_wordpress_get` and its
    `url` first, then send the changes in the shapes the `seo_wordpress_update` description gives.
    For a link of the map:

@@ -1,6 +1,6 @@
 ---
 name: seostudio-parasite-post
-description: "SEOStudio: Write a post on another site - a forum post, a reply, an answer, a platform article or a video description for a big site that already ranks on Google for the user's search, written and scored at the Content writer's quality, with a disclosure line and at most one link to the user's site. The user posts it from their own account; never post for them. Use when the user presses Write a post on the Other sites page, or asks to rank on a forum, a questions site or a publishing platform."
+description: "SEOStudio: Use when a post for a big site already ranking on Google for the user's search should be written (a forum post, reply, answer, platform article or video description) at the Content writer's quality, with a disclosure and one link at most. The user posts it from their own account; never post for them. Use when the user presses Write a post on the Other sites page, or asks to rank on a forum, a questions site or a publishing platform."
 metadata:
   title: Write a post on another site
   summary: Rank on big sites with posts that link to you
@@ -71,39 +71,39 @@ Read the `content-writer` skill (`skill_get`) for its writing principles, and wr
 
 1. **Pick the post.** A post named: `seo_parasite_get` `view: "post"`. Otherwise
    `seo_parasite_get` `view: "chances"`, `play: "use"`, and ask ONE question with the top chances
-   (search, site, position, searches a month). Create it with `seo_parasite_update`
-   `action: "create"` (`host`, `keyword`). A `beat` chance is never a post: it is a page of the
+   (search, site, position, searches a month). Create it with `seo_parasite_posts_create`
+   (`host`, `keyword`). A `beat` chance is never a post: it is a page of the
    user's own site (the Content planner).
 2. **The community's rules.** Find where the post goes (`community`; a reply's `threadUrl`). Read its
-   rules with the web tools, or ask the user to paste them. Save them with `seo_parasite_update`
-   `action: "hostRules"` (and `linksAllowed: false` when links are forbidden). Self-promotion
+   rules with the web tools, or ask the user to paste them. Save them with `seo_parasite_posts_update` `hostRules`
+   (and `linksAllowed: false` when links are forbidden). Self-promotion
    forbidden outright: ask "Write it without the link (Recommended)" / "Pick another community" /
    "Stop".
-3. **Lock and read.** `seo_parasite_build` `mode: "lock"` (priced first when no first page is held),
+3. **Lock and read.** `seo_parasite_lock` (priced first when no first page is held),
    again while `pending` > 0. Then `seo_parasite_get` `view: "brief"`.
 4. **Research.** Read what ranks and the questions Google shows. Every fact you use goes in `facts`;
    every first-hand item only the user can give goes in `needs`, and you ask the user for it.
-5. **Write and save.** `seo_parasite_update` `action: "draft"` (`title` when titled, `markdown`,
+5. **Write and save.** `seo_parasite_posts_update` (`title` when titled, `markdown`,
    `angle`: what the post gives that the ranking results lack, `facts`, `needs`, `targetUrl` when it
    differs, your `session` id). Each save scores it: fix `scoreDetail.hardFailures` and the failing
    checks and save again until it passes. A check you cannot meet: say which and why.
 6. **Judge.** Start an independent judge agent (never you): it reads `seo_parasite_get`
-   `view: "judge"` and answers with `seo_parasite_update` `action: "judgement"`. No way to start one:
-   offer the app's judge, `seo_parasite_build` `mode: "judge"`, priced first. Fix what it finds and
+   `view: "judge"` and answers with `seo_parasite_posts_update` `judgement`. No way to start one:
+   offer the app's judge, `seo_parasite_judge`, priced first. Fix what it finds and
    judge again.
-7. **Ready.** `seo_parasite_update` `action: "status"`, `status: "ready"` (refused: fix the reasons).
+7. **Ready.** `seo_parasite_posts_update`, `status: "ready"` (refused: fix the reasons).
    Say in one line that the post is ready to copy from the Other sites page, and that the user posts
    it from their own account.
 8. **After posting.** Ask for the post's address. Read `tracking` from `seo_parasite_get`
-   `view: "post"`. `available: true`: say the monthly price, then `seo_parasite_update`
-   `action: "posted"` with `postUrl`, `track: true` and `quotedCredits`. `available: false`: call it
+   `view: "post"`. `available: true`: say the monthly price, then `seo_parasite_posted_record`
+   with `postUrl`, `track: true` and `quotedCredits`. `available: false`: call it
    with `track: false`.
 
 ## When the user asks later
 
 - **"Write another post":** step 1.
-- **"Check Google again":** `seo_parasite_build` `mode: "refresh"`, priced first, again while
+- **"Check Google again":** `seo_parasite_refresh`, priced first, again while
   `remaining` > 0.
-- **"The post was taken down":** `seo_parasite_update` `action: "status"`, `status: "removed"`.
-- **"Not interested in this chance":** `seo_parasite_update` `action: "dismiss"` with its
+- **"The post was taken down":** `seo_parasite_posts_update`, `status: "removed"`.
+- **"Not interested in this chance":** `seo_parasite_chances_dismiss` with its
   `hostDomain`, `keyword` and `play`.

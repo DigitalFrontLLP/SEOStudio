@@ -1,6 +1,6 @@
 {
   "name": "seostudio",
-  "displayName": "SEOStudio",
+  "displayName": "SEOStudio - SEO Tools & Skills",
   "version": "1.0.0",
   "description": "An AI SEO agent that gets your site found on Google and ChatGPT.",
   "author": {
@@ -13,6 +13,11 @@
   "license": "MIT",
   "keywords": [
     "mcp",
-    "seo"
+    "seo",
+    "rank tracking",
+    "search console",
+    "backlinks",
+    "ai seo",
+    "seo skills"
   ]
 }

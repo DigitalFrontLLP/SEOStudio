@@ -1,6 +1,6 @@
 ---
 name: seostudio-keyword-research
-description: "SEOStudio: Find every keyword a site could use, price them, read their Google results, ask the user about their focus (funnel level and topics), remove what clearly does not fit it, then pick the main keyword with the user. Use when a project has no keyword list yet, or when the user asks to widen or redo their keyword research."
+description: "SEOStudio: Use when a project has no keyword list yet, or when the user asks to widen or redo their keyword research. Finds every keyword a site could use, prices them, reads their Google results, asks the user about their focus (funnel level and topics), removes what clearly does not fit it, then picks the main keyword with the user."
 metadata:
   title: Find keywords
   summary: Find, price and pick the keywords your site should target
@@ -63,14 +63,15 @@ run ends by picking the main keyword with the user.
 
 | Tool | Cost |
 | --- | --- |
-| `projects_list`, `projects_get`, `projects_update`, `account_status_get`, `seo_plan_get`, `skill_get`, `seo_plan_step_confirm`, `seo_search_console_sync`, `search_performance_get` | free |
+| `projects_list`, `projects_get`, `projects_update`, `account_status_get`, `seo_overview_get`, `skill_get`, `seo_plan_step_confirm`, `seo_search_console_sync`, `search_performance_get` | free |
 | `seo_keywords_list` | free; `review: true` reads the targeted pool, 100 short rows a page; with `brief: true` keywords only, 1,000 a page |
 | `seo_competitor_keywords_get` | paid per page of 1,000 rows fresh, free from cache. One call buys at most 10 pages |
 | `seo_keyword_ideas_get` | paid per request plus a share per row, fresh; free from cache. `estimate: true` prices it and buys nothing |
 | `seo_keyword_metrics_get` | paid per keyword bought (one request carries up to 700); held numbers are free. Keywords with no figure are asked of Google Ads, per batch of 1,000. Never pass `clickstream` unless the user asks |
 | `seo_keywords_save` | free; `evaluate: true` buys only the facts the keywords miss |
 | `seo_serp_get` with `saved: true` | per keyword not judged yet: a fresh first page (free from cache) plus a small reserve for judging it and the keyword questions (usually settles lower) |
-| `seo_keywords_update` | `state: "apply"` with new topics buys each keyword's topic answer; inside the run it collects the related searches of the targeted keywords' Google results, priced at the `seo_keyword_metrics_get` price and checked at the `seo_serp_get` price; it labels the Google results of the keywords the rules keep, and ranks; with `estimate: true` and topic `examples` it buys only the test answers not held yet; `state: "check"` and targeting named keywords buy what they miss (`estimate: true` prices it); removing is free |
+| `seo_keywords_rules_apply` | with new topics in `focus` it buys each keyword's topic answer; inside the run it collects the related searches of the targeted keywords' Google results, priced at the `seo_keyword_metrics_get` price and checked at the `seo_serp_get` price; it labels the Google results of the keywords the rules keep, and ranks; with `estimate: true` and topic `examples` it buys only the test answers not held yet; without `focus` it only ranks, free |
+| `seo_keywords_check`, `seo_keywords_update` | `seo_keywords_check` and targeting named keywords (`state: "active"`) buy what they miss (`estimate: true` prices it); removing is free |
 | `seo_research_log_append` | free; it also ranks the targeted keywords, buying any priority answers they miss |
 
 Prices depend on the account's plan: quote only the price a tool's description, its `estimate` or
@@ -83,8 +84,9 @@ numbers; do not guess.
    null, ask the user (the country the site's language points at first) and save it with
    `projects_update { project, market: "XX" }`. A run is ONE market: name the project's other
    `markets` once at the end. Never change `market` on your own.
-2. **Check the plan.** `seo_plan_get`. If `blocked.reason` is `no_profile`, run the `project-profile` skill
-   now, without asking (`skill_get`, then follow it), and check the plan again. If `blocked.reason` is
+2. **Check the plan.** `seo_overview_get` `parts: ["plan"]`. If `plan.blocked.reason` is `no_profile`, run the `project-profile` skill
+   now, without asking first (`skill_get`, then follow it; its check-in still runs), and check the
+   plan again. If `plan.blocked.reason` is
    `no_website`, ask the user for the site's address and set it with `projects_update` (`url`). If the `keyword_research`
    step is `done` or `stale`, read its `redoWarning` out and get a yes, unless the user already
    confirmed the redo on the page. If `profileChanged` is set,
@@ -198,7 +200,7 @@ numbers; do not guess.
     Test each topic: pick 5 searches from the scan that belong in it and 5 near ones that do not (1
     to 5 a side when the scan has fewer; never invent one). When the scan has them, the near ones
     include the same kind of search for another product or market, or a general one spanning many.
-    Call `seo_keywords_update` with `state: "apply"`, `estimate: true` and each topic's
+    Call `seo_keywords_rules_apply` with `estimate: true` and each topic's
     `examples: {in, out}`. A topic with `pass: false` gets a sharper definition: its `inScoredOut`
     are `in` searches the definition missed, so say what they are about in it; its `outScoredIn` are
     `out` searches it took in, so name what they are about in `Not:`. Test it again, at most twice.
@@ -214,7 +216,7 @@ numbers; do not guess.
        still comparing" (`middle`) / "Everyone, including people just learning" (`full`).
 
     If no user can answer, take the recommended topics and `bottom`.
-14. **Apply the focus.** `seo_keywords_update` with `state: "apply"`, the market, the language and
+14. **Apply the focus.** `seo_keywords_rules_apply` with the market, the language and
     `focus: { funnel, topics }`. Pass EVERY topic with `name`, `definition`, `kind`, `picked` and
     `recommended`. It also collects the related searches and "people also ask" questions of the
     targeted keywords' Google results and checks them, so the ones that fit the focus are targeted
@@ -281,7 +283,7 @@ numbers; do not guess.
     one option is "Keep <current keyword>": on it, set nothing, call `seo_plan_step_confirm` with
     `step: "main_keyword"` if that step is `stale`, and still write its step 7 log. If its step 2
     stops (nothing to pick), say the report lines and go to step 18.
-18. **Next.** ONE question with the question tool from a fresh `seo_plan_get`: "<next step's title>
+18. **Next.** ONE question with the question tool from a fresh `seo_overview_get` `parts: ["plan"]`: "<next step's title>
     now" / "Later". Its text is the main keyword line (and `replaces "<old keyword>"` when it replaced
     one), nothing else in chat. After the answer, never repeat the run's result (it is already on
     the questions): "<next step> now" starts that step's skill with no line before it; "Later" gets
@@ -303,10 +305,10 @@ Use the same market and language. Each of these is the user's own request; never
 - **"Find more keywords":** `seo_keyword_ideas_get` without `collect`, `estimate: true` first.
 - **"Target these" / "leave these out":** `seo_keywords_update` with `state: "active"` or
   `"dormant"`, the `keywords` and a `reason`. For targeting, `estimate: true` first.
-- **"Check the waiting keywords" / "Re-rank":** `seo_keywords_update` with `state: "check"` /
-  `"rerank"`, `estimate: true` first.
-- **"Start over":** `seo_keywords_update` with `state: "start_over"` and a `reason`. Data already
-  bought stays, and `state: "restore"` brings the cleared research back for 30 days. When the request says the page already cleared the research, do not start over
+- **"Check the waiting keywords" / "Re-rank":** `seo_keywords_check` / `seo_keywords_rules_apply`
+  without `focus`, `estimate: true` first.
+- **"Start over":** `seo_keywords_reset` with a `reason`. Data already
+  bought stays, and `restore: true` brings the cleared research back for 30 days. When the request says the page already cleared the research, do not start over
   again: run the steps from the start.
 - **A note on a keyword:** pass `note` with `keywords` only when the user asked. Read and honour the
   notes `seo_keywords_list` returns.

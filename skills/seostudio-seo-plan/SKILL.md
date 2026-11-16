@@ -1,6 +1,6 @@
 ---
 name: seostudio-seo-plan
-description: "SEOStudio: The entry point for SEO content work. Reads where a project stands in the four-step SEO plan, tells the user the one next action, and runs the step skill that does it. Use when the user asks what to do next on a site, mentions their SEO plan or keywords, or does not name a step themselves."
+description: "SEOStudio: Use when the user asks what to do next on a site, mentions their SEO plan or keywords, or does not name a step themselves. The entry point for SEO content work. Reads where a project stands in the four-step SEO plan, tells the user the one next action, and runs the step skill that does it."
 metadata:
   title: SEO plan
   summary: "Run your SEO plan step by step: the one next step, then the skill that does it"
@@ -44,19 +44,19 @@ plain words):
 
 ## Steps
 
-1. **Read the plan.** `seo_plan_get` (free). When the user's reference fits more than one project,
+1. **Read the plan.** `seo_overview_get` `parts: ["plan"]` (free). When the user's reference fits more than one project,
    `projects_list` and ask which.
-2. **Clear the block first.** `blocked.reason` says why the plan cannot start:
-   - `no_profile`: run the `project-profile` skill now without asking (read it with `skill_get`),
-     then read the plan again.
+2. **Clear the block first.** `plan.blocked.reason` says why the plan cannot start:
+   - `no_profile`: run the `project-profile` skill now without asking first (read it with
+     `skill_get`; its check-in still runs), then read the plan again.
    - `no_website`: ask for the site's address and set it with `projects_update` (`url`).
    - Run nothing else until the block clears. A missing Search Console never blocks: when
-     `gate.searchConsole` is false, say in one line that connecting it adds the searches the site
+     `plan.gate.searchConsole` is false, say in one line that connecting it adds the searches the site
      already shows for.
 3. **Say where the project stands.** ONE short line per step: its `title`, its `status` (and
    `summary` when it has one), plus what it does when the user does not know yet. Never a second
-   list. Then offer `nextAction` in one line, without repeating what its step does.
-   `nextAction: null` means every available step is done: say so and stop.
+   list. Then offer `plan.nextAction` in one line, without repeating what its step does.
+   `plan.nextAction: null` means every available step is done: say so and stop.
 4. **A stale step** may or may not still hold. Offer both: redo it, or, when the user says it still
    stands, `seo_plan_step_confirm` with its `id` (free, deletes nothing). Never confirm on your own
    judgement.
@@ -81,5 +81,5 @@ At most two short lines, then ONE question:
 1. What the step concluded, in one line.
 2. Where the project stands now, in one line.
 
-Then ask the next action from a fresh `seo_plan_get` with the question tool: "<title> now" /
-"Later". `nextAction: null`: say every step is done and ask nothing.
+Then ask the next action from a fresh `seo_overview_get` `parts: ["plan"]` with the question tool: "<title> now" /
+"Later". `plan.nextAction: null`: say every step is done and ask nothing.

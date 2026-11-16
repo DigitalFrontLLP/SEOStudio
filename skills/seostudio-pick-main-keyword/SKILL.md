@@ -1,6 +1,6 @@
 ---
 name: seostudio-pick-main-keyword
-description: "SEOStudio: Help the user pick the one main keyword their site should rank for, from the keywords they target, recommending the highest-priority buyer search that names the whole offer, with its buyer facts (CPC, what the first page sells, offer and choosing answers, volume) as the reasons. Use after keyword research, or when the user asks which keyword to go after first."
+description: "SEOStudio: Use after keyword research, or when the user asks which keyword to go after first. Helps the user pick the one main keyword their site should rank for, from the keywords they target, recommending the highest-priority buyer search that names the whole offer, with its buyer facts (CPC, what the first page sells, offer and choosing answers, volume) as the reasons."
 metadata:
   title: Pick main keyword
   summary: Choose the one main keyword your site should rank for first
@@ -75,9 +75,9 @@ table and no other question, the research's report lines on top, each option a c
 the site ranks and its `Why`, and "Keep <current keyword>" as an option when a main keyword exists.
 On its own, run every step.
 
-1. **Read the project.** `projects_get`, `account_status_get`, and `seo_plan_get`:
-   - `blocked.reason` `no_profile`: run the `project-profile` skill now without asking (`skill_get`), then
-     check the plan again. `no_website`: ask for the address and set it with `projects_update`.
+1. **Read the project.** `projects_get`, `account_status_get`, and `seo_overview_get` `parts: ["plan"]`:
+   - `plan.blocked.reason` `no_profile`: run the `project-profile` skill now without asking first (`skill_get`; its
+     check-in still runs), then check the plan again. `no_website`: ask for the address and set it with `projects_update`.
    - The `main_keyword` step `done`: read its `redoWarning` and get a yes. `stale`: offer "Pick
      again" / "It still stands"; on the second, `seo_plan_step_confirm` and stop.
 2. **Read the candidates.** `seo_keywords_list` with `mainCandidates: true`, the market, the
@@ -108,8 +108,8 @@ Two short lines, then ONE question:
 1. The main keyword, plus `replaces "<old keyword>"` when it replaced one.
 2. The one fact that settled it.
 
-Then ask the next action from a fresh `seo_plan_get`: "<`nextAction` title> now" / "Later". A step
-not built yet is said in one line, not offered; `nextAction: null` is said in one line with nothing
+Then ask the next action from a fresh `seo_overview_get` `parts: ["plan"]`: "<`plan.nextAction` title> now" / "Later". A step
+not built yet is said in one line, not offered; `plan.nextAction: null` is said in one line with nothing
 asked. After the answer, never repeat the result.
 
 Everything this skill writes stays inside this app. Never publish or change anything outside this

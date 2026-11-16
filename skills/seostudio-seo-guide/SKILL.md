@@ -1,6 +1,6 @@
 ---
 name: seostudio-seo-guide
-description: "SEOStudio: The map of this app for an agent working without its pages. Says which skill or tool answers each goal (what to do next, keywords, content plan, writing a page, a weak page, rankings, traffic, site health, AI assistants, competitors, local, reports, a new project), the order the work goes in, what each page of the app shows and which tools read or change it, what runs on its own, what only the app can do, and the money, question and approval rules. Use it when the user asks what to do next, how something works, or names a goal rather than a step."
+description: "SEOStudio: Use when the user asks what to do next, how something works, or names a goal rather than a step - the map of this app for an agent working without its pages. Says which skill or tool answers each goal (what to do next, keywords, content plan, writing a page, a weak page, rankings, traffic, site health, AI assistants, competitors, local, reports, a new project), the order the work goes in, what each page of the app shows and which tools read or change it, what runs on its own, what only the app can do, and the money, question and approval rules."
 metadata:
   role: map
   title: Start here
@@ -37,9 +37,6 @@ rules win over this page.
   unless the user asked for that specific change. Before an SEO-critical change (indexing,
   canonicals, redirects, page addresses, unpublishing, overwriting a live page), check with the user
   in one question, unless they said not to ask.
-- **A call that waits for the user** answers `status: "approval_required"`: nothing changed yet.
-  Show its `changes`, ask in the chat, and only on a yes send the same call again with its
-  `approval_code` value. `approval_declined`: they said no.
 - **Deletes.** Before deleting something the user may want to keep, confirm with one question.
 - **Numbers come from the tools.** Never estimate the clicks a change will bring.
 - **Reports.** Any result the user wants to read, print or share as a report: the `seo-report`
@@ -54,24 +51,24 @@ rules win over this page.
 | A new site | `projects_create`, the `project-profile` skill, then the `seo-plan` skill |
 | Change the site's profile, markets or competitors | the `project-profile` skill (`projects_update`) |
 | Keywords | the `keyword-research` skill |
-| How big is my market, how do I compare with my competitors? | `seo_competitors_get` (free, after keyword research) |
+| How big is my market, how do I compare with my competitors? | `seo_keywords_list` `view: "competitors"` (free, after keyword research) |
 | The main keyword | the `pick-main-keyword` skill |
 | Do AI assistants mention us? | `seo_ai_visibility_get` (free); a new run is the `ai-visibility` skill |
 | Plan content, silos, internal links | the `content-planner` skill |
 | Write, improve or publish a page | the `content-writer` skill (no page named: the planner's next page) |
-| The weakest page | `seo_actions_list`, `seo_dashboard_get` lenses `losing`, `quick_wins`, `improve_or_remove`, then `seo_pages_get`. Its words: `content-writer`; a technical problem: `fix-my-site` |
+| The weakest page | `seo_dashboard_get` `view: "actions"`, `seo_dashboard_get` lenses `losing`, `quick_wins`, `improve_or_remove`, then `seo_pages_get`. Its words: `content-writer`; a technical problem: `fix-my-site` |
 | Fix the site, audit issues, broken or missing links | the `fix-my-site` skill |
 | Pages with fewer clicks than their position usually gets | `seo_dashboard_get` lens `low_ctr`: a filter to explore, never advice; Google sometimes answers the search itself |
 | Rankings | `seo_rank_tracking_get` (the site's positions come from Search Console; guest posts are checked), and `search_performance_get` or `seo_dashboard_get` for every search |
-| Why did traffic drop? | `seo_actions_list`, `seo_dashboard_get` with `compare`, `seo_pages_get` with `results: ["lost"]`, `web_analytics_get` |
-| Site health | `seo_site_audit_get`, `seo_site_health_get`, `seo_indexing_get`; fixes: `fix-my-site` |
+| Why did traffic drop? | `seo_dashboard_get` `view: "actions"`, `seo_dashboard_get` with `compare`, `seo_pages_get` with `results: ["lost"]`, `web_analytics_get` |
+| Site health | `seo_site_audit_get`, `seo_site_health_get` (`view: "indexing"`), `seo_indexing_inspect`; fixes: `fix-my-site` |
 | A competitor or any domain | `seo_site_explorer_get` (`estimate` first); `opportunities` is free |
 | Links to win | `seo_site_explorer_get` sections `link_gap`, `broken_backlinks`, `referring_domains`; `domains` scores up to 1,000 sites at once (`estimate` first) |
-| Get links | `seo_backlinks_get` (free; `check` before working any site), `seo_link_sources_get`; submitting is the `link-submissions` skill; more places from the live web: the `find-link-sources` skill; pitching sites by email: the `link-outreach` skill |
+| Get links | `seo_backlinks_get` (free; `check` before working any site; `view: "sources"` for the places to get links); submitting is the `link-submissions` skill; more places from the live web: the `find-link-sources` skill; pitching sites by email: the `link-outreach` skill |
 | Rank on big sites with posts | `seo_parasite_get` view `chances` (free); writing one is the `parasite-post` skill |
 | Local results, Maps, reviews | `seo_local_get` (`estimate` first) |
 | One keyword's figures, ideas or Google results | `seo_keyword_metrics_get`, `seo_keyword_ideas_get` with `seeds`, `seo_serp_get` with `depth: 10` or a `type` (AI Overview, AI Mode, Maps) (priced first) |
-| A keyword's history, forecast, top 10 strength | `seo_keyword_lookup_get` (`estimate` first) |
+| A keyword's history, forecast, top 10 strength | `seo_keyword_metrics_get` with a `section` (`estimate` first) |
 | A report (site review, rankings, AI visibility, keywords, a check-in to share) | the `seo-report` skill; saved ones: `seo_reports_get` |
 
 No fit: `skills_list` and pick by description; with no skill, use the page's tools below, free
@@ -88,7 +85,7 @@ reads first.
 6. **Keep it healthy**: Do next, audit issues and internal links go to `fix-my-site`; pages that
    lose clicks go back to the writer.
 
-Steps 2 to 4 are the SEO plan (`seo_plan_get`); a redo marks the later steps stale.
+Steps 2 to 4 are the SEO plan (`seo_overview_get` `parts: ["plan"]`); a redo marks the later steps stale.
 
 **Publish only finished work.** Google judges a new site, and each new page, early, and a weak first
 verdict can take a long time to undo. When the user wants to put thin, unfinished or unscored pages
@@ -107,40 +104,52 @@ passing). Keep pages that matter current: a meaningful update counts, a cosmetic
 ## The app's pages and their tools
 
 - **Dashboard** (Do next, Performance, Changes, Indexing, Page speed, a page's panel). Read:
-  `seo_overview_get` (every area at once), `seo_actions_list`, `seo_dashboard_get`,
-  `search_performance_get` (`strikingDistance`: quick wins), `seo_pages_get`, `seo_indexing_get`,
-  `seo_site_health_get`, `web_analytics_get`. Change:
-  `seo_actions_update` (done, snooze, dismiss), `seo_page_notes_add`, `seo_page_changes_record`
-  (record a change made in the site's files, or `undo` one), `seo_dashboard_update` (saved views,
-  headline tiles, brand terms), `seo_indexnow_update`.
-- **Keywords** (main keyword, focus, table, lists). Read: `seo_keywords_list`,
-  `seo_keyword_lists_list`, `seo_keyword_lists_get`. Change: `seo_keywords_update`,
-  `seo_keywords_save`, `seo_keyword_lists_create`, `seo_keyword_lists_update`,
+  `seo_overview_get` (every area at once), `seo_dashboard_get` (`view: "actions"`: Do next),
+  `search_performance_get` (`strikingDistance`: quick wins), `seo_pages_get`,
+  `seo_site_health_get` (`view: "indexing"`), `web_analytics_get`, `seo_settings_get`. Change:
+  `seo_actions_update` (done, snooze, dismiss), `seo_page_changes_record` (a note, a change made in
+  the site's files, or `undo` one), `seo_settings_update` (saved views, headline tiles, brand terms),
+  `seo_indexing_inspect`, `seo_indexnow_set` (also re-checks the key file), `seo_indexnow_submit`.
+- **Keywords** (main keyword, focus, table, lists). Read: `seo_keywords_list` (`view: "lists"`
+  for the lists). Change: `seo_keywords_update`, `seo_keywords_rules_apply`, `seo_keywords_check`,
+  `seo_keywords_reset`, `seo_keywords_save`, `seo_keyword_lists_create`, `seo_keyword_lists_update`,
   `seo_keyword_lists_delete`, `seo_research_log_append`. Paid: `seo_keyword_ideas_get`,
   `seo_keyword_metrics_get`, `seo_competitor_keywords_get`, `seo_serp_get`.
 - **AI visibility** (mentions by assistant, "Questions people ask"). Read:
   `seo_ai_visibility_get`. Change: `seo_ai_visibility_run` (paid), `seo_ai_visibility_update`.
 - **Content planner** and **Internal links**. Read: `seo_content_plan_get`. Change:
-  `seo_content_plan_build`, `seo_content_plan_update`; links are applied by `fix-my-site`.
-- **Content writer**. Read: `seo_content_writer_get`, `seo_content_score_get` (saves the page's score). Change:
-  `seo_content_writer_build`, `seo_content_writer_update`.
-- **Other sites** (posts on big sites). Read: `seo_parasite_get`. Change: `seo_parasite_update`,
-  `seo_parasite_build` (paid parts priced first).
-- **Site audit**. Read: `seo_site_audit_get` (`view: "shares"`, `view: "sitemap"`),
-  `seo_site_audit_inspect`. Change: `seo_site_audit_crawl`, `seo_site_audit_update` (`share`
-  makes a public report link, shown once; `unshare` revokes it).
+  `seo_content_plan_rebuild`, `seo_content_plan_finish`, `seo_content_plan_links_redo`,
+  `seo_content_plan_pages_score`, `seo_content_plan_update`; links are applied by `fix-my-site`.
+- **Content writer**. Read: `seo_content_writer_get`, `seo_content_score_run` (saves the page's score). Change:
+  `seo_content_writer_lock`, `seo_content_writer_publish`, `seo_content_writer_open`,
+  `seo_content_writer_judge`, `seo_content_writer_image_make`, `seo_content_writer_update`,
+  `seo_content_writer_settings_update`.
+- **Other sites** (posts on big sites). Read: `seo_parasite_get`. Change: `seo_parasite_posts_create`, `seo_parasite_posts_update`,
+  `seo_parasite_posts_delete`, `seo_parasite_posted_record`, `seo_parasite_chances_dismiss`,
+  `seo_parasite_lock`, `seo_parasite_judge`, `seo_parasite_refresh` (paid parts priced first).
+- **Site audit**. Read: `seo_site_audit_get` (`view: "shares"`, `"sitemap"`, `"settings"`,
+  `"extra_pages"`), `seo_site_audit_inspect`. Change: `seo_site_audit_crawl`, `seo_site_audit_update`,
+  `seo_share_links_update` (`siteAudit` makes a public report link, shown once; `revokeSiteAudit`
+  revokes it).
 - **Rank tracking**. Read: `seo_rank_tracking_get` (paged with `nextOffset`; the site's positions
-  come from Search Console, free; guest posts are checked and charged). Change: `seo_rank_tracking_update`.
+  come from Search Console, free; guest posts are checked and charged). Change: `seo_rank_tracking_add`,
+  `seo_rank_tracking_update`, `seo_rank_tracking_check`.
 - **Site explorer**. Read: `seo_site_explorer_get`.
-- **Keyword lookup**. Read: `seo_keyword_metrics_get`, `seo_keyword_ideas_get`, `seo_serp_get`,
-  `seo_keyword_lookup_get`. Change: `seo_keywords_save`, `seo_keyword_lists_update`,
-  `seo_rank_tracking_update`.
-- **Backlinks**. Read: `seo_backlinks_get`, `seo_link_sources_get`. Change:
-  `seo_backlinks_update`, `seo_link_sources_update` (`match` priced first).
-- **Reports**. Read: `seo_reports_get` (`templates: true`). Change: `seo_reports_update`.
-- **Integrations**. Read: `integrations_list`, `seo_wordpress_get`, `seo_data_source_update`. Change:
-  `seo_wordpress_update` (writes to the connected site).
-- **No page**: `seo_local_get`; the plan's pair `seo_plan_get` and `seo_plan_step_confirm`.
+- **Keyword lookup**. Read: `seo_keyword_metrics_get` (`section` for history, forecast, top 10),
+  `seo_keyword_ideas_get`, `seo_serp_get`. Change: `seo_keywords_save`, `seo_keyword_lists_update`,
+  `seo_rank_tracking_add`.
+- **Backlinks**. Read: `seo_backlinks_get` (`view: "sources"` for link sources). Change:
+  `seo_backlinks_add`, `seo_backlinks_update` (a row's fields and outreach steps),
+  `seo_backlinks_delete`, `seo_backlinks_verify`, `seo_backlinks_find`, `seo_backlinks_traffic_buy`,
+  `seo_outreach_prospects_find`, `seo_outreach_contacts_find`, `seo_outreach_draft_approve`,
+  `seo_link_sources_match` (priced first), `seo_link_sources_report`; sign-up details and pace:
+  `seo_settings_update` `linkBuilding`.
+- **Reports**. Read: `seo_reports_get` (`templates: true`). Change: `seo_reports_create`,
+  `seo_reports_update`, `seo_reports_delete`, `seo_share_links_update` (`report`); the emailed
+  reports: `seo_settings_update` `emails`.
+- **Integrations**. Read: `integrations_list`, `seo_wordpress_get`, `seo_settings_get` (`dataSource`). Change:
+  `seo_wordpress_update` (writes to the connected site), `seo_data_source_switch`.
+- **No page**: `seo_local_get`; the plan's pair `seo_overview_get` `parts: ["plan"]` and `seo_plan_step_confirm`.
 
 ## What only the app can do
 

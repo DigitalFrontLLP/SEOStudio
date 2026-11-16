@@ -1,6 +1,6 @@
 ---
 name: seostudio-link-submissions
-description: "SEOStudio: Get links from sources - submit the user's site to the directories, launch sites, review sites, profiles, awesome lists and other sources that fit it, one browser agent per site on the user's own computer, confirming sign-ups and sending submission emails from the user's own inbox and writing every result back to the Backlinks list. Never pays, never reviews, never posts. Use when the user presses Get links with AI on the Backlinks page, or asks to submit their site to directories or link sources."
+description: "SEOStudio: Use when the user presses Get links with AI on the Backlinks page, or asks to submit their site to directories or link sources. Get links from sources - submit the user's site to the directories, launch sites, review sites, profiles, awesome lists and other sources that fit it, one browser agent per site on the user's own computer, confirming sign-ups and sending submission emails from the user's own inbox and writing every result back to the Backlinks list. Never pays, never reviews, never posts."
 metadata:
   title: Get links from sources
   summary: Submit your site to the sources that fit it
@@ -36,7 +36,7 @@ the reason).
 ## Rules
 
 - **Free, except the source match.** Submitting runs on the user's computer and costs nothing. Only
-  `seo_link_sources_update` `action: "match"` is paid: price it with `estimate: true`, say the
+  `seo_link_sources_match` is paid: price it with `estimate: true`, say the
   price in dollars (`~$0.40`; the user's money is their balance, never "credits"), then run it with
   `quotedCredits`.
 - **Market and language.** The tools have NO default market or language: when a tool asks, take
@@ -62,7 +62,7 @@ the reason).
   `gh` and `git` commands "Awesome lists" names. No connector other than the one for the user's
   inbox. Every subagent brief carries this rule too.
 - **Report a dead source.** A source whose page fails to load on a second try or is clearly parked
-  or for sale: also `seo_link_sources_update` `action: "report"` with its `sourceId` and
+  or for sale: also `seo_link_sources_report` with its `sourceId` and
   `reason: "site_gone"`; paid only: `reason: "paid_only"`; broken: `reason: "form_rejected"`. A slow
   page is not dead.
 
@@ -74,7 +74,7 @@ the reason).
 2. **Read the project.** `projects_get`, then `seo_backlinks_get` `view: "summary"` (while its
    `status` is `running`, wait `checkAgainInSeconds`, then read it once). No
    `settings.signupEmail`: before the first submission, ask for the user's own address and save it
-   with `seo_backlinks_update` `action: "settings"` (an address on this app's own domain is
+   with `seo_settings_update` `linkBuilding: { signupEmail }` (an address on this app's own domain is
    refused: ask again).
 3. **Inbox.** Use a mail tool your runtime has for that inbox, else the browser where it is signed
    in. Neither: ask "Connect my inbox (Recommended)" / "Go without it" (then sign-ups that need a
@@ -86,10 +86,10 @@ the reason).
    "Stop", then install it with its official command.
 6. **Build the queue.** Sources not matched to the site yet (`sources.matched` below `sources.all`
    in the summary): price the match (see Rules) and run it with `quotedCredits`; a large match runs in the
-   background: read the summary again until `matching` is false. Then `seo_link_sources_get`
-   `view: "fitting"`, `notInList: true` (paged with `limit` and `offset`), plus the list's `to_do`
+   background: read the summary again until `matching` is false. Then `seo_backlinks_get`
+   `view: "sources"`, `source: "fitting"`, `notInList: true` (paged with `limit` and `offset`), plus the list's `to_do`
    rows of type `submission` (`seo_backlinks_get` `status: "to_do"`, `type: "submission"`). Keep the
-   order the tools answer. Then `view: "maybe"`, `notInList: true`: the sources the match was not
+   order the tools answer. Then `source: "maybe"`, `notInList: true`: the sources the match was not
    sure about; keep only those whose `scope` lists this kind of business. Then ask
    "Submit to N sites (free) (Recommended)" / "Pick sites" / "Stop". With "Pick sites", list the
    names and let the user choose.
@@ -100,7 +100,7 @@ the reason).
      "Awesome lists" says, then move on.
    - `seo_backlinks_get` `view: "check"` with its domain: already listed means skip it (an
      awesome list: only a row whose `prospectUrl` is that list).
-   - `seo_backlinks_update` `action: "add"` with `site`, `type: "submission"`,
+   - `seo_backlinks_add` with `site`, `type: "submission"`,
      `status: "in_progress"`, `sourceId` and `prospectUrl`. A refusal means skip it.
    - An awesome list (kind `awesome_list`): see "Awesome lists" below, never a browser agent.
    - Run one subagent or browser session per site, at most `settings.parallelAgents` at once. Each
@@ -108,7 +108,7 @@ the reason).
      - **Goal:** list the business on this site with a link to its website.
      - **Facts:** only what `projects_get` holds (name, website, description, audience, country,
        contact details it names), plus the source's `howTo` and `needs` from
-       `seo_link_sources_get` `view: "source"`. A field the facts cannot fill truthfully: stop
+       `seo_backlinks_get` `view: "sources"` with its `sourceId`. A field the facts cannot fill truthfully: stop
        with `needs_info`.
      - **Rules:**
        - never pay, never enter a card, never take a paid upsell or a paid plan;
@@ -143,7 +143,7 @@ the reason).
    sign-up email. Ask ONE question showing every address with its full subject and body: "Send N
    emails from <signup email> (Recommended)" / "Skip them". On yes, send each from the user's inbox
    (the mail tool, else the browser), exactly as shown, one per site, then mark it `email_sent`. Skipped: `failed`, `failReason: "needs_info"`, the address in `note`.
-10. **Write back every move, as it happens.** `seo_backlinks_update` `action: "change"` with the
+10. **Write back every move, as it happens.** `seo_backlinks_update` with the
    row's `ids`:
    - signed up, confirmation email not opened yet: `status: "confirm_email"`;
    - submission email sent: `status: "email_sent"`;

@@ -1,6 +1,6 @@
 ---
 name: seostudio-find-link-sources
-description: "SEOStudio: Find more link sources - search the live web for free places that fit the user's site beyond the app's own source list (niche directories and listings, resource pages, communities and profile sites, unpaid guest-post and contributor pages, pages that name competitors), verify each one on its own page, and add the good ones to the project's sources and Backlinks list. Never submits, pays, posts or contacts anyone. Use when the user asks to find more backlink opportunities, link sources or directories for their site, or when the sources that fit it run out."
+description: "SEOStudio: Use when the user asks to find more backlink opportunities, link sources or directories for their site, or when the sources that fit it run out. Find more link sources - search the live web for free places that fit the user's site beyond the app's own source list (niche directories and listings, resource pages, communities and profile sites, unpaid guest-post and contributor pages, pages that name competitors), verify each one on its own page, and add the good ones to the project's sources and Backlinks list. Never submits, pays, posts or contacts anyone."
 metadata:
   title: Find more link sources
   summary: Find more free places that can link to your site
@@ -59,7 +59,7 @@ many guessed ones.
 
 1. **Read the project.** `projects_get`: what it sells, to whom, where, its competitors, market and
    language. Then `seo_backlinks_get` `view: "summary"`. No website: say so in one line and stop.
-2. **Held data first (free).** `seo_backlinks_update` `action: "find"`, then read the summary until
+2. **Held data first (free).** `seo_backlinks_find`, then read the summary until
    its `status` is `done` (wait `checkAgainInSeconds` between reads). Read the `to_do` rows it added
    (`seo_backlinks_get` `status: "to_do"`): a list article or thread among them can name more places
    to check.
@@ -72,7 +72,7 @@ many guessed ones.
    - awesome lists on GitHub for its field (curated lists that take entries by pull request).
 4. **Search and shortlist.** Keep the candidates that fit, about twice the target. Skip a domain the
    project already holds: `seo_backlinks_get` `view: "check"` with its `domain`, and
-   `seo_link_sources_get` `view: "all"` with the domain as `q` (a source already there: add its row
+   `seo_backlinks_get` `view: "sources"`, `source: "all"` with the domain as `q` (a source already there: add its row
    in step 6 with its `sourceId`, no suggestion).
 5. **Verify each one** with the web reader: its page, then its submit, contact or guidelines page.
    Keep it only when all hold:
@@ -83,12 +83,12 @@ many guessed ones.
      section the site fits.
    Drop the rest with a short reason: dead, off-topic, link farm, no link, no way in.
    One of the app's sources whose page fails to load on a second try or is clearly parked or for
-   sale: also `seo_link_sources_update` `action: "report"` with its `sourceId` and
+   sale: also `seo_link_sources_report` with its `sourceId` and
    `reason: "site_gone"`; paid only: `reason: "paid_only"`; broken: `reason: "form_rejected"`. A
    slow page is not dead.
 6. **Add the good ones.**
    - **It takes submissions** (a listing, a profile, a launch or review page):
-     `seo_link_sources_update` `action: "suggest"` with `url` (the submit page), `name`, `kind`,
+     `seo_link_sources_report` with `suggest`: `url` (the submit page), `name`, `kind`,
      `scope` (the kinds of business it lists, in a few plain words) and `method` (`instant`, `account`, `approval`, `paid`, or
      `unknown` when the page does not say). An awesome list: `kind: "awesome_list"`, `url` the
      list's page, `method: "approval"`. Then add the row with `type: "submission"` and the
@@ -96,7 +96,7 @@ many guessed ones.
    - **The rest**, by type: `list_article` (a resource or list page), `forum` (a thread or a
      community), `link_gap` (a page that links to competitors), `manual` (a guest-post or
      contributor page).
-   - One `seo_backlinks_update` `action: "add"` for all rows: `site`, `type`, `status: "to_do"`,
+   - One `seo_backlinks_add` for all rows: `site`, `type`, `status: "to_do"`,
      `prospectUrl` (the page to act on), `contact` when the page names one, and `notes` (what it
      wants, and the link attribute when stated).
 
