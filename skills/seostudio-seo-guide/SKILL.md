@@ -147,8 +147,8 @@ passing). Keep pages that matter current: a meaningful update counts, a cosmetic
 - **Reports**. Read: `seo_reports_get` (`templates: true`). Change: `seo_reports_create`,
   `seo_reports_update`, `seo_reports_delete`, `seo_share_links_update` (`report`); the emailed
   reports: `seo_settings_update` `emails`.
-- **Integrations**. Read: `integrations_list`, `seo_wordpress_get`, `seo_settings_get` (`dataSource`). Change:
-  `seo_wordpress_update` (writes to the connected site), `seo_data_source_switch`.
+- **Integrations**. Read: `integrations_list`, `seo_wordpress_get`. Change:
+  `seo_wordpress_update` (writes to the connected site).
 - **No page**: `seo_local_get`; the plan's pair `seo_overview_get` `parts: ["plan"]` and `seo_plan_step_confirm`.
 
 ## What only the app can do
