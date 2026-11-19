@@ -30,6 +30,10 @@ export type Command =
 			project: string | null;
 			/** Whether the start URL's host may be on a private or local address (a staging site on this network). */
 			allowPrivate: boolean;
+			/** Whether pages are rendered in a browser (`--no-render` turns it off: raw HTML only). */
+			render: boolean;
+			/** The browser to render in, as `--chrome` named it; null to look for one. */
+			chrome: string | null;
 	  }
 	| { kind: "login" }
 	| { kind: "logout" }
@@ -52,7 +56,8 @@ export const USAGE = `seostudio - free SEO site audit from your terminal
 
 Usage:
   seostudio audit <url> [--max-pages N] [--format html|json|csv] [--out file] [--allow-private]
-  seostudio audit <url> --save [--project <id or domain>]
+                       [--no-render] [--chrome path]
+  seostudio audit <url> --save [--project <id or domain>] [--no-render] [--chrome path]
   seostudio login
   seostudio logout
   seostudio mcp
@@ -73,11 +78,17 @@ Options:
                     (a staging site on your own network). Every other host stays
                     refused. Off by default: the crawler never reads private,
                     loopback or cloud metadata addresses.
+  --no-render       Read raw HTML only. By default audit renders each page in your
+                    installed Chrome, Chromium or Edge (headless), as Google does,
+                    and runs the accessibility and spelling checks; without a
+                    browser it reads raw HTML and says so.
+  --chrome path     The browser to render in, when it is not found on its own.
 
 Environment:
   SEOSTUDIO_API_KEY    An API key; used before the saved one.
   SEOSTUDIO_PROJECTS   The projects agent crawls, comma separated, when no --project
                        is given.
+  CHROME_PATH          The browser to render in; --chrome is used before it.
 
 The audit runs on this computer and sends nothing anywhere except requests to the site
 it crawls. No usage data is collected.`;
@@ -215,6 +226,8 @@ function parseOptions(args: readonly string[]) {
 			save: { type: "boolean" },
 			project: { type: "string", multiple: true },
 			"allow-private": { type: "boolean" },
+			"no-render": { type: "boolean" },
+			chrome: { type: "string" },
 			once: { type: "boolean" },
 			interval: { type: "string" },
 			help: { type: "boolean", short: "h" }
@@ -306,6 +319,12 @@ function parseAudit(values: Options, positionals: readonly string[]): ParseResul
 	}
 	const out = values.out === undefined ? null : values.out.trim();
 	if (out === "") return { ok: false, error: "--out needs a file name." };
+	const render = values["no-render"] !== true;
+	const chrome = values.chrome === undefined ? null : values.chrome.trim();
+	if (chrome === "") return { ok: false, error: "--chrome needs the browser's path." };
+	if (!render && chrome !== null) {
+		return { ok: false, error: "--chrome chooses the browser that renders; drop --no-render." };
+	}
 	return {
 		ok: true,
 		command: {
@@ -316,7 +335,9 @@ function parseAudit(values: Options, positionals: readonly string[]): ParseResul
 			out,
 			save,
 			project: values.project?.[0]?.trim() || null,
-			allowPrivate: values["allow-private"] === true
+			allowPrivate: values["allow-private"] === true,
+			render,
+			chrome
 		}
 	};
 }

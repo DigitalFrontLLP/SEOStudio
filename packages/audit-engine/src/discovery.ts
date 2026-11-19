@@ -19,6 +19,7 @@ import type {
 import { normalizePageUrl } from "./urls";
 
 import { LinkGraph, linkGraphOf } from "./link-graph";
+import type { SeoReadPageOptions } from "./reading";
 import { compileRobotsPattern, robotsPatternMatches } from "./robots";
 import type { RobotsPattern } from "./robots";
 import { SEO_CUSTOM_CHECK_LIMITS } from "./reading-limits";
@@ -512,6 +513,36 @@ export function localPageOptions(
  */
 export function renderDeviceOf(settings: SeoCrawlSettings): "mobile" | "desktop" {
 	return settings.userAgentPreset === "googlebot_desktop" ? "desktop" : "mobile";
+}
+
+/** What a computer that renders the pages itself reads beyond the server: see {@link computerReadOptions}. */
+export type SeoComputerReadOptions = Required<
+	Pick<
+		SeoReadPageOptions,
+		"accessibility" | "desktopRender" | "spelling" | "device" | "renderWaitMs"
+	>
+>;
+
+/**
+ * How a computer that renders the pages in its own browser reads each one, as the desktop app does:
+ * every accessibility rule (not only the server's search-relevant subset), a second render as a
+ * desktop browser for the mobile and desktop parity check, and the spelling check in every language,
+ * on the device and with the render wait the project's settings name.
+ *
+ * @param page - The device and the render wait ({@link localPageOptions}, or {@link renderDeviceOf} and
+ *   the settings' `renderWaitMs`).
+ * @returns The read options.
+ */
+export function computerReadOptions(
+	page: Pick<SeoLocalCrawlPageOptions, "device" | "renderWaitMs">
+): SeoComputerReadOptions {
+	return {
+		accessibility: "all",
+		desktopRender: true,
+		spelling: "all",
+		device: page.device,
+		renderWaitMs: page.renderWaitMs
+	};
 }
 
 /** A project's URL rules, compiled once per crawl step. */

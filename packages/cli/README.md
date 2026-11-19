@@ -4,7 +4,9 @@ A free SEO site audit from your terminal, from [SEOStudio](https://seostudio.com
 
 It crawls your site from your computer and checks it: broken links and redirects, titles and
 descriptions, headings, thin pages, indexability, canonical tags, structured data, images, speed
-signals and more. You get a short summary in the terminal and a full report as HTML, JSON or CSV.
+signals and more. With Chrome, Chromium or Edge installed it also renders each page, so it checks
+JavaScript, accessibility and spelling too. You get a short summary in the terminal and a full
+report as HTML, JSON or CSV.
 
 With an SEOStudio account it can also send its crawls to your project, give your AI agent one MCP
 server for the audit and your SEOStudio tools, and run your scheduled crawls on your own server.
@@ -39,14 +41,29 @@ seostudio audit https://example.com/blog/ --max-pages 200 --format csv --out blo
 | `--format html\|json\|csv` | The report format (default `html`). JSON follows a versioned schema (`schemaVersion: 1`). |
 | `--out file` | Where to write the report (default `seostudio-audit-<site>.<format>`). |
 | `--allow-private` | Let the crawl read the site you named on a private or local address, such as a staging site on your own network. Every other host stays refused. Off by default. |
+| `--no-render` | Read raw HTML only, without a browser. |
+| `--chrome path` | The browser to render in, when it is not found on its own. `CHROME_PATH` works too. |
 
 The summary lists the issues by severity, the issues that touch the most pages, and **thin page
 candidates**: pages with little text. The crawl alone cannot tell whether a thin page gets search
 traffic, so check Search Console before you merge or remove one. (SEOStudio does this check for you
 with your Search Console data.)
 
-The terminal audit skips the TLS certificate check (SEOStudio's servers run it), so its health score
-can differ by about a point from the one in your dashboard.
+### What it checks, and what it cannot
+
+By default the audit renders every page in your installed Chrome, Chromium or Edge, headless, as
+Google renders it. It then checks what the page's JavaScript changes, the mobile and desktop
+versions of the page, every accessibility rule, and spelling. The browser runs with a throwaway
+profile, never yours, and every request a page makes goes through the crawler's address guard. If
+no browser is found, the audit reads raw HTML, skips those checks and says so.
+
+It cannot check:
+
+- Google Search Console and Analytics data, lab speed tests, Chrome UX Report (CrUX) field data or
+  the paid AI checks. These need an SEOStudio account.
+- Pages behind a login. Login cookies and recorded logins work in the SEOStudio desktop app only.
+- The TLS certificate (SEOStudio's servers check it), so the health score can differ by about a
+  point from the one in your dashboard.
 
 The crawler is polite: it obeys robots.txt, waits between requests, and never reads private,
 loopback or cloud metadata addresses, and checks every redirect again (unless you pass
@@ -55,8 +72,9 @@ loopback or cloud metadata addresses, and checks every redirect again (unless yo
 ### Save a crawl to your project
 
 With an SEOStudio API key, `--save` crawls from your computer and stores the result in your
-project, exactly like a crawl from the SEOStudio desktop app. The project's site audit, history and
-recommendations update as after any other crawl.
+project, exactly like a crawl from the SEOStudio desktop app. It renders the pages the same way
+when a browser is found. The project's site audit, history and recommendations update as after any
+other crawl.
 
 ```bash
 seostudio login
@@ -89,7 +107,7 @@ account:
 
 | Tool | What it does |
 | --- | --- |
-| `local_audit_run` | Crawl a site from your computer and audit it. |
+| `local_audit_run` | Crawl a site from your computer and audit it (raw HTML, no browser). |
 | `local_audit_get` | Read a report: the summary, or the whole report as JSON, CSV or HTML (or write it to a file). |
 | `local_audit_issues_list` | List a report's issues by severity, check or page. |
 
@@ -147,7 +165,8 @@ SEOSTUDIO_API_KEY=<your key> npx seostudio agent --project <project id>
 ```
 
 Every 15 minutes (`--interval` to change it) the agent asks SEOStudio which of the named projects
-are due and crawls them from your server. `--once` runs one pass and stops, for a cron job. The
+are due and crawls them from your server, reading raw HTML (no browser). `--once` runs one pass
+and stops, for a cron job. The
 agent crawls only the projects you name with `--project` (repeat it) or `SEOSTUDIO_PROJECTS`
 (comma separated).
 

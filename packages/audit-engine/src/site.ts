@@ -5,11 +5,13 @@ import { SEO_CRAWLER_ROBOTS_AGENT, seoCrawlerUserAgent } from "./config";
 import {
 	clickDepths,
 	compileUrlRules,
+	computerReadOptions,
 	crawlKeyOf,
 	crawlSettingsOf,
 	crawlTrapOf,
 	isSignOutUrl,
 	linkGraphCoverage,
+	renderDeviceOf,
 	urlInScope
 } from "./discovery";
 import type { SeoHostProbes, SeoPageHreflang } from "./facts";
@@ -115,7 +117,11 @@ export interface CrawlSiteOptions {
 	 * hop by hop, so it must not follow them itself). Tests pass a fake site.
 	 */
 	fetch?: SeoCrawlFetcher;
-	/** A browser to render each page in; without one every page is judged on its raw HTML. */
+	/**
+	 * A browser to render each page in; without one every page is judged on its raw HTML. With one, each
+	 * page is read as the desktop app reads it (`computerReadOptions`): every accessibility rule, a
+	 * second render as a desktop browser, the spelling check in every language.
+	 */
 	render?: SeoPageRenderer;
 	/** The clock; the wall clock by default. */
 	now?: () => Date;
@@ -687,6 +693,16 @@ export async function crawlSite(options: CrawlSiteOptions): Promise<AuditReport>
 
 	tell({ phase: "pages", pagesFound: state.known.size });
 	const delayMs = politeDelay(state.robots);
+	const pageOptions: SeoReadPageOptions =
+		options.render === undefined
+			? { robots: state.robots }
+			: {
+					robots: state.robots,
+					...computerReadOptions({
+						device: renderDeviceOf(settings),
+						renderWaitMs: settings.renderWaitMs
+					})
+				};
 	const lane = async (): Promise<void> => {
 		for (let key = state.queue.shift(); key !== undefined; key = state.queue.shift()) {
 			const known = state.known.get(key);
@@ -698,7 +714,7 @@ export async function crawlSite(options: CrawlSiteOptions): Promise<AuditReport>
 				key,
 				userAgent,
 				{ ...deps, ...(options.render === undefined ? {} : { render: options.render }) },
-				{ robots: state.robots }
+				pageOptions
 			);
 			commit(state, known, reading, now());
 			tell({ pagesRead: state.read.size, pagesFound: state.known.size, currentUrl: null });

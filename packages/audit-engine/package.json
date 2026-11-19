@@ -1,6 +1,6 @@
 {
 	"name": "@seostudio/audit-engine",
-	"version": "0.1.0",
+	"version": "0.2.0",
 	"description": "The SEOStudio site audit engine: a polite crawler and its audit rules, with no database.",
 	"license": "MIT",
 	"repository": {

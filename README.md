@@ -1,6 +1,7 @@
-# SEOStudio skills
+# SEOStudio skills and site audit
 
-Open-source SEO skills for your AI agent, from [SEOStudio](https://seostudio.com).
+Open-source SEO skills for your AI agent, and a free site audit you run on your own computer, from
+[SEOStudio](https://seostudio.com).
 
 Add them to Claude Code, Codex, Cursor or any app that reads Agent Skills. Your agent then does the
 SEO work on your site: keyword research, a content plan, new pages, technical fixes, links and AI
@@ -76,6 +77,19 @@ next step and runs the skill that does it.
 | `seostudio-seo-guide` | Start here: what this app can do for your site and where to begin |
 | `seostudio-seo-plan` | Run your SEO plan step by step: the one next step, then the skill that does it |
 | `seostudio-seo-report` | Turn your site's data into one clean report you can read, print and share |
+
+## Free site audit (CLI)
+
+Audit any site from your terminal, free and with no account. It crawls the site, renders each page in
+your installed Chrome, Chromium or Edge, and writes a report as HTML, JSON or CSV:
+
+```bash
+npx seostudio audit example.com
+```
+
+It is the same audit engine the SEOStudio app uses, in [`packages/audit-engine`](packages/audit-engine)
+(MIT). The CLI is in [`packages/cli`](packages/cli); its README lists every option, the local MCP
+server mode and what it cannot check without an account (Google data and paid AI checks).
 
 ## Costs
 

@@ -10,16 +10,19 @@ import type {
 	SeoReadPageOptions,
 	SeoSitePlanInput
 } from "@seostudio/audit-engine/reading";
+import { computerReadOptions } from "@seostudio/audit-engine/discovery";
 import { readResources } from "@seostudio/audit-engine/resource-check";
 import type { SeoResourceCheckTarget } from "@seostudio/audit-engine/resource-check";
+import type { SeoPageRenderer } from "@seostudio/audit-engine/types";
 
 import { guardedFetch } from "@seostudio/audit-engine";
 import type { SaveReader } from "./save.js";
 
 /**
  * THE AUDIT ENGINE AS A SAVED CRAWL'S READER: the same plan, page and file reads the desktop app makes,
- * raw HTML only (no browser), every request through the engine's address guard (`guardedFetch`: no
- * private, local or metadata address, each redirect hop checked again, the connection pinned).
+ * with the desktop's read options (`computerReadOptions`), every request through the engine's address
+ * guard (`guardedFetch`: no private, local or metadata address, each redirect hop checked again, the
+ * connection pinned). Pages are rendered when a browser is lent, else read as raw HTML.
  */
 
 /**
@@ -81,13 +84,15 @@ function isResourceTarget(value: unknown): value is SeoResourceCheckTarget {
 /**
  * The engine's reader over the guarded transport.
  *
+ * @param render - The browser each page is rendered in, or undefined to read raw HTML only.
  * @returns The reader.
  */
-export function engineReader(): SaveReader {
+export function engineReader(render?: SeoPageRenderer): SaveReader {
 	const deps: SeoReadDeps = {
 		fetch: guardedFetch,
 		now: () => new Date(),
-		sleep: (ms) => new Promise((done) => setTimeout(done, ms))
+		sleep: (ms) => new Promise((done) => setTimeout(done, ms)),
+		...(render === undefined ? {} : { render })
 	};
 	return {
 		async readPlan(plan) {
@@ -100,9 +105,7 @@ export function engineReader(): SaveReader {
 				input.robotsTxt === null ? null : crawlerRobots(input.robotsTxt, input.robotsAgent);
 			const reading = await readSitePage(input.pageKey, input.userAgent, deps, {
 				robots,
-				device: input.device,
-				renderWaitMs: input.renderWaitMs,
-				spelling: "all",
+				...computerReadOptions({ device: input.device, renderWaitMs: input.renderWaitMs }),
 				customChecks: input.customChecks.filter(isCustomCheck)
 			});
 			return boundReading(reading);

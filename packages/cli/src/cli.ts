@@ -4,7 +4,8 @@ import { resolve } from "node:path";
 import { createInterface } from "node:readline";
 
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
-import { crawlSite } from "@seostudio/audit-engine";
+import { crawlSite, createGuardedFetch, guardedFetch } from "@seostudio/audit-engine";
+import type { SeoCrawlFetcher, SeoPageRenderer } from "@seostudio/audit-engine/types";
 
 import { runAgent } from "./agent.js";
 import { apiOrigin, seoApi } from "./api.js";
@@ -12,6 +13,7 @@ import { parseCommand, USAGE } from "./args.js";
 import type { Command } from "./args.js";
 import { localAuditTools } from "./audit-tools.js";
 import type { CrawlSite } from "./audit-tools.js";
+import type { BrowserSession } from "./browser.js";
 import { configDir, forgetApiKey, resolveApiKey, saveApiKey } from "./config-store.js";
 import { createMcpServer, hostedTools } from "./mcp.js";
 import { chooseProject, listCrawlProjects } from "./projects.js";
@@ -30,6 +32,21 @@ import { CLI_VERSION } from "./version.js";
 /** The environment variable that names the projects `agent` crawls, comma separated. */
 export const PROJECTS_ENV = "SEOSTUDIO_PROJECTS";
 
+/** The environment variable that names the browser `audit` renders in (`--chrome` is used before it). */
+export const BROWSER_ENV = "CHROME_PATH";
+
+/**
+ * The line `audit` prints when it found no browser to render in and reads raw HTML instead.
+ *
+ * @param named - The browser path the person named, or null when none was named.
+ * @returns The line.
+ */
+export function noBrowserNotice(named: string | null): string {
+	return named === null
+		? `No Chrome, Chromium or Edge found, so pages are read as raw HTML (no JavaScript, accessibility or spelling checks). Install one, or name it with --chrome <path> or ${BROWSER_ENV}.\n`
+		: `No browser at ${named}, so pages are read as raw HTML (no JavaScript, accessibility or spelling checks). Check the path given to --chrome or ${BROWSER_ENV}.\n`;
+}
+
 /** What the command reaches outside itself. */
 export interface CliIo {
 	env: Readonly<Record<string, string | undefined>>;
@@ -46,6 +63,10 @@ export interface CliIo {
 	fetch?: typeof fetch;
 	/** How `--save` and `agent` read the site; the audit engine's over the network guard by default. */
 	reader?: SaveReader;
+	/** Finds the browser `audit` renders in: its path, or null when none is installed; this computer's by default. */
+	findBrowser?: (named: string | null) => string | null;
+	/** Starts that browser headless; the CLI's own launcher by default. */
+	launchBrowser?: (path: string, fetch: SeoCrawlFetcher) => Promise<BrowserSession>;
 	/** Waits between two agent passes, cut short by a stop. */
 	wait?: (ms: number) => Promise<void>;
 	stopRequested?: () => boolean;
@@ -115,22 +136,30 @@ async function run(command: Command, io: CliIo): Promise<number> {
 async function auditHere(command: Extract<Command, { kind: "audit" }>, io: CliIo): Promise<number> {
 	const crawl = io.crawl ?? crawlSite;
 	let lastPhase = "";
+	const allowPrivateHosts = command.allowPrivate
+		? new Set([new URL(command.url).hostname.toLowerCase()])
+		: undefined;
+	const browser = await startBrowser(command, io, createGuardedFetch({ allowPrivateHosts }));
 	io.err(`Crawling ${command.url} (up to ${String(command.maxPages)} pages)...\n`);
-	const report = await crawl({
-		url: command.url,
-		maxPages: command.maxPages,
-		...(command.allowPrivate
-			? { allowPrivateHosts: new Set([new URL(command.url).hostname.toLowerCase()]) }
-			: {}),
-		onProgress: (progress) => {
-			if (progress.phase !== lastPhase) {
-				lastPhase = progress.phase;
-				io.err(`  ${progress.phase}: ${String(progress.pagesRead)} pages read\n`);
-			} else if (progress.phase === "pages" && progress.pagesRead > 0 && progress.pagesRead % 50 === 0) {
-				io.err(`  pages: ${String(progress.pagesRead)} of ${String(progress.pagesFound)} found\n`);
+	let report: Awaited<ReturnType<typeof crawl>>;
+	try {
+		report = await crawl({
+			url: command.url,
+			maxPages: command.maxPages,
+			...(allowPrivateHosts === undefined ? {} : { allowPrivateHosts }),
+			...(browser === null ? {} : { render: browser.render }),
+			onProgress: (progress) => {
+				if (progress.phase !== lastPhase) {
+					lastPhase = progress.phase;
+					io.err(`  ${progress.phase}: ${String(progress.pagesRead)} pages read\n`);
+				} else if (progress.phase === "pages" && progress.pagesRead > 0 && progress.pagesRead % 50 === 0) {
+					io.err(`  pages: ${String(progress.pagesRead)} of ${String(progress.pagesFound)} found\n`);
+				}
 			}
-		}
-	});
+		});
+	} finally {
+		await browser?.close();
+	}
 	const file = resolve(io.cwd, command.out ?? defaultReportFile(command.url, command.format));
 	await (io.writeFile ?? ((path, text) => writeFile(path, text, "utf-8")))(
 		file,
@@ -145,6 +174,46 @@ async function auditHere(command: Extract<Command, { kind: "audit" }>, io: CliIo
 		);
 	}
 	return 0;
+}
+
+/**
+ * The browser `audit` renders in, started; or null, with the reason printed, when rendering is off,
+ * no browser is found or it cannot start: the audit then reads raw HTML.
+ *
+ * @param command - The audit command.
+ * @param io - What it reaches outside itself.
+ * @param fetch - The guarded transport every request of a rendered page goes through.
+ * @returns The started browser, or null.
+ */
+async function startBrowser(
+	command: Extract<Command, { kind: "audit" }>,
+	io: CliIo,
+	fetch: SeoCrawlFetcher
+): Promise<BrowserSession | null> {
+	if (!command.render) return null;
+	const named = command.chrome ?? (io.env[BROWSER_ENV]?.trim() || null);
+	const own =
+		io.findBrowser !== undefined && io.launchBrowser !== undefined
+			? null
+			: await import("./browser.js");
+	const find = io.findBrowser ?? own?.findInstalledBrowser;
+	const launch = io.launchBrowser ?? own?.launchBrowser;
+	if (find === undefined || launch === undefined) return null;
+	const path = find(named);
+	if (path === null) {
+		io.err(noBrowserNotice(named));
+		return null;
+	}
+	try {
+		const session = await launch(path, fetch);
+		io.err(`Rendering pages in ${path} (headless).\n`);
+		return session;
+	} catch (error) {
+		io.err(
+			`The browser at ${path} did not start (${error instanceof Error ? error.message : String(error)}), so pages are read as raw HTML. Name another with --chrome <path>, or pass --no-render.\n`
+		);
+		return null;
+	}
 }
 
 /**
@@ -188,21 +257,27 @@ async function auditSaved(command: Extract<Command, { kind: "audit" }>, io: CliI
 		return 1;
 	}
 	const { project } = chosen;
+	const browser = io.reader === undefined ? await startBrowser(command, io, guardedFetch) : null;
 	io.err(`Crawling ${project.urlHost ?? command.url} into project ${project.name}...\n`);
 	let lastPhase = "";
-	const result = await saveCrawl({
-		projectId: project.id,
-		siteHost: project.urlHost ?? new URL(command.url).hostname,
-		api: keyed.api,
-		reader: io.reader ?? (await defaultReader()),
-		...(io.stopRequested === undefined ? {} : { stopRequested: io.stopRequested }),
-		onProgress: (progress) => {
-			if (progress.phase !== lastPhase) {
-				lastPhase = progress.phase;
-				io.err(`  ${progress.phase}: ${String(progress.checked)} pages checked\n`);
+	let result: Awaited<ReturnType<typeof saveCrawl>>;
+	try {
+		result = await saveCrawl({
+			projectId: project.id,
+			siteHost: project.urlHost ?? new URL(command.url).hostname,
+			api: keyed.api,
+			reader: io.reader ?? (await defaultReader(browser?.render)),
+			...(io.stopRequested === undefined ? {} : { stopRequested: io.stopRequested }),
+			onProgress: (progress) => {
+				if (progress.phase !== lastPhase) {
+					lastPhase = progress.phase;
+					io.err(`  ${progress.phase}: ${String(progress.checked)} pages checked\n`);
+				}
 			}
-		}
-	});
+		});
+	} finally {
+		await browser?.close();
+	}
 	if (!result.ok) {
 		io.err(`${result.error}\n`);
 		return 1;
@@ -222,11 +297,12 @@ async function auditSaved(command: Extract<Command, { kind: "audit" }>, io: CliI
 /**
  * The audit engine's reader over the network guard, loaded only when a crawl is saved.
  *
+ * @param render - The browser each page is rendered in, or undefined for raw HTML only.
  * @returns The reader.
  */
-async function defaultReader(): Promise<SaveReader> {
+async function defaultReader(render?: SeoPageRenderer): Promise<SaveReader> {
 	const { engineReader } = await import("./reader.js");
-	return engineReader();
+	return engineReader(render);
 }
 
 /**

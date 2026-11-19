@@ -35,7 +35,13 @@ await writeFile("audit.csv", toCsv(report));
 ```
 
 `crawlSite` runs every check that needs no paid data or account data. The checks that join Google
-Search Console, Analytics or lab tests stay quiet without that data.
+Search Console, Analytics, lab tests, CrUX field data or the paid AI checks stay quiet without that
+data, and it reads no page behind a login.
+
+Without a browser every page is judged on its raw HTML. Pass `render` (a function that renders a
+page in a headless Chromium) and each page is read as the SEOStudio desktop app reads it: rendered
+as a phone and as a desktop, with every accessibility rule and the spelling check. The `seostudio`
+CLI lends it the user's own Chrome, Chromium or Edge.
 
 ## The report
 
