@@ -71,7 +71,7 @@ rules win over this page.
 | A keyword's history, forecast, top 10 strength | `seo_keyword_metrics_get` with a `section` (`estimate` first) |
 | A report (site review, rankings, AI visibility, keywords, a check-in to share) | the `seo-report` skill; saved ones: `seo_reports_get` |
 
-No fit: `skills_list` and pick by description; with no skill, use the page's tools below, free
+No fit: `skill_get` with no name lists every skill; pick by description; with no skill, use the page's tools below, free
 reads first.
 
 ## The order of the work

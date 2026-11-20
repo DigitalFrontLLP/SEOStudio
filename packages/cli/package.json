@@ -1,6 +1,6 @@
 {
 	"name": "seostudio",
-	"version": "0.2.0",
+	"version": "0.2.1",
 	"description": "Free SEO site audit from your terminal, plus a local MCP server and a crawl agent for SEOStudio projects.",
 	"license": "MIT",
 	"repository": {
@@ -38,11 +38,11 @@
 	},
 	"devDependencies": {
 		"@modelcontextprotocol/sdk": "^1.32.2",
-		"@seostudio/audit-engine": "^0.2.0",
-		"@types/node": "26.6.5",
+		"@seostudio/audit-engine": "^0.2.1",
+		"@types/node": "26.6.6",
 		"tsup": "^9.0.0",
 		"tsx": "4.23.15",
-		"typescript": "6.0.3",
+		"typescript": "npm:@typescript/typescript6@6.0.2",
 		"zod": "4.6.7"
 	}
 }
