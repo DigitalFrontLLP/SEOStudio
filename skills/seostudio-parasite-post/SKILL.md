@@ -21,10 +21,11 @@ This is a mandatory procedure: follow every step in order; add no steps of your 
 
 ## Goal
 
-A post the user can paste on a big site that already ranks for their search. It answers the
-community's question better than what ranks there now, says plainly how the writer is linked to the
-user's site, links to it at most once, passes its score and an independent judge, and is marked
-`ready`. The user posts it from their own account; its link and position are then followed for them.
+A post the user can paste on a big site that already ranks for their search. It answers the community's
+question better than what ranks there now, says plainly how the writer is linked to the user's site,
+links to it at most once, scores as high as edits that help the reader can take it, passes an independent
+judge, and is marked `ready`. The user posts it from their own account; its link and position are then
+followed for them.
 
 ## How you talk to the user
 
@@ -61,8 +62,9 @@ Read the `content-writer` skill (`skill_get`) for its writing principles, and wr
 
 - **The brief's format rules win**: its title rule (`format.titled`), its length band
   (`format.length`), the link rule and the share of sentences that may name the site.
-- **The community first.** Its readers, its tone, the answer in the first lines. No meta
-  description, slug or internal links; subheadings and images only in a platform article.
+- **The community first.** Its readers, its tone, the answer in the first lines. The score decides what
+  to fix and you fix it for the readers; the only exception is filler (`content-writer` step 10). No meta description, slug or internal links; subheadings and images
+  only in a platform article.
 - **The one link** goes to the brief's target page, where it helps the reader most. None when the
   community forbids links (`linksAllowed: false`). Sources of facts may be linked where the
   community allows links.
@@ -83,10 +85,11 @@ Read the `content-writer` skill (`skill_get`) for its writing principles, and wr
    again while `pending` > 0. Then `seo_parasite_get` `view: "brief"`.
 4. **Research.** Read what ranks and the questions Google shows. Every fact you use goes in `facts`;
    every first-hand item only the user can give goes in `needs`, and you ask the user for it.
-5. **Write and save.** `seo_parasite_posts_update` (`title` when titled, `markdown`,
-   `angle`: what the post gives that the ranking results lack, `facts`, `needs`, `targetUrl` when it
-   differs, your `session` id). Each save scores it: fix `scoreDetail.hardFailures` and the failing
-   checks and save again until it passes. A check you cannot meet: say which and why.
+5. **Write and save.** `seo_parasite_posts_update` (`title` when titled, `markdown`, `angle`: what the
+   post gives that the ranking results lack, `facts`, `needs`, `targetUrl` when it differs, your
+   `session` id). Each save scores it: fix `scoreDetail.hardFailures` and the failing checks and save
+   again until the score is 100 or only filler is left (`content-writer` step 10). Under the bar it is
+   never `ready`.
 6. **Judge.** Start an independent judge agent (never you): it reads `seo_parasite_get`
    `view: "judge"` and answers with `seo_parasite_posts_update` `judgement`. No way to start one:
    offer the app's judge, `seo_parasite_judge`, priced first. Fix what it finds and

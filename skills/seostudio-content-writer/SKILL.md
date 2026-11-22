@@ -1,6 +1,6 @@
 ---
 name: seostudio-content-writer
-description: "SEOStudio: Use when the user asks to write, rewrite, improve or publish a page of the content plan, presses Write or Improve on one, opens the Content writer, or presses Fix with AI on a problem fixed by changing a page's words. Writes one page of a project's content plan so the user does not need to edit it - locked against the pages Google ranks for its main keyword, researched live with every fact sourced, carrying a unique angle, edited where the page lives (the site's code, its files or WordPress) and scored by the app until it passes the project's bar. A page's words are its title, description, headings or text."
+description: "SEOStudio: Use when the user asks to write, rewrite, improve or publish a page of the content plan, presses Write or Improve on one, opens the Content writer, or presses Fix with AI on a problem fixed by changing a page's words. Writes one page of a project's content plan so the user does not need to edit it - locked against the pages Google ranks for its main keyword, researched live with every fact sourced, carrying a unique angle, edited where the page lives (the site's code, its files or WordPress) and scored by the app past the project's bar. A page's words are its title, description, headings or text."
 metadata:
   title: Write a page
   summary: Write or improve one page of your content plan, then publish it
@@ -29,13 +29,14 @@ This is a mandatory procedure: follow every step in order; add no steps of your 
 
 ## Goal
 
-One page the user does not need to edit: it answers its search better than the pages Google ranks now,
-gives the most value per word, is very easy to read, adds something those pages lack, and every fact in
-it is checked at its source. Never invent a fact, a number, a quote, an experience or an author.
+One page the user does not need to edit, made first for the people who read it: it answers its search
+better than the pages Google ranks now, gives the most value per word, is very easy to read and use, adds
+something those pages lack, and every fact in it is checked at its source. Never invent a fact, a number,
+a quote, an experience or an author.
 
-**How it works:** you edit the page where it lives; the app gives you the brief and is the referee. You
-send the page to the score until it passes, an independent judge checks it, and every score is saved
-to the page as a version.
+**How it works:** you edit the page where it lives; the app gives you the brief and scores the page. You
+raise the score to at least the bar, aiming for 100: the score decides what to fix, you fix it the way that
+helps the reader most, and the only thing it can never make you add is filler (step 10). An independent judge checks it, and every score is saved to the page as a version.
 
 ## How you talk to the user
 
@@ -87,7 +88,7 @@ Find this once, before you write. It decides how you edit and how you score.
 
 | Where | How you edit | How you score it |
 | --- | --- | --- |
-| **Site code** (a code folder or repository, with a dev server) | Edit the page's own files (components, content or translation files), keeping its layout, styles and conventions. | Render the page from the dev server and send that HTML: `seo_content_score_run` `html`. |
+| **Site code** (a code folder or repository, with a dev server) | Edit the page's own files (components, content or translation files) in its styles and conventions; use or build components where they serve the search better than text. | Render the page from the dev server and send that HTML: `seo_content_score_run` `html`. |
 | **Content files** (Markdown or MDX in the site's code) | Edit the file, its front matter included. | Send the body as `draft.markdown`, with the front matter's title, description and slug. |
 | **WordPress connected** (`seo_wordpress_get`) | A new page: write it as the app's draft (`seo_content_writer_update` `draft`). A live page: write the new version and send it to the score; publish sends that version to WordPress. | A new page: saving the draft scores it. A live page: `seo_content_score_run` with `draft.markdown`, `metaTitle`, `metaDescription`. |
 | **No source** (nothing connected) | A new page: copy mode, write it as the app's draft; the user copies it from the Content writer page. A live page: you cannot change it; give the user its `mustFix` in short lines and say that connecting WordPress or the site's code lets you do it. | A new page: saving the draft scores it. A live page: its `url`, once the user changed it. |
@@ -189,7 +190,8 @@ stands.
      accuracy, practical usefulness, original information, readability, trust and sourcing, and SEO
      structure, one line per real difference, never your own higher by default. Add to the outline
      what the set covers, it lacks and changes the reader's decision (an option or named thing, a
-     choose-by-need table, a worked example, an honest order), never length for its own sake; never
+     choose-by-need table, a worked example, an honest order; in site code also a component such as a
+     filterable comparison, a calculator or a checker), never length for its own sake; never
      narrow its scope because of one narrow page; a template stays one block the reader can copy.
      Research the facts it needs; never invent experience or data.
    - The meta title, the meta description and the H1 (on a home page also the hero line): write each
@@ -207,10 +209,11 @@ stands.
    - Before you score, read every sentence that names a source ("X says", "per X") or says "every",
      "all", "only" or a superlative: its fact's claim must say the same, else reword it.
    - Pick the author (ask once when the project has several; none means the site's name).
-   - Site code: keep the page's layout and components; change only its words and the parts the outline
-     needs. Read the rendered page first: a component that shows its own title (a grid, a card list, a
-     widget) already heads its section; never add a heading that repeats it. Keep the hero as short as
-     the site's design has it; new hero words only from options the user picks.
+   - Site code: keep the page's design and components; change its words and build what the outline needs
+     as components in the site's own style, their text in the rendered HTML. Read the rendered page
+     first: a component that shows its own title (a grid, a card list, a widget) already heads its
+     section; never add a heading that repeats it. Keep the hero as short as the site's design has it;
+     new hero words only from options the user picks.
    - A live page on WordPress: send it to `seo_content_score_run` (step 10), never as a draft.
    - A new page on WordPress or in copy mode: save `seo_content_writer_update` `draft` (`markdown`, `metaTitle`,
      `metaDescription`, `slug`, `authorId`, `highAuthority`, `entities`).
@@ -218,16 +221,21 @@ stands.
      on every save.
 10. **Score loop.** `seo_content_score_run` with `pageId`, `runId`, `session` and the page as it lives now
     (`html`, `draft.markdown` or `url`). Each score is saved to the page as a version.
+    - **The score decides what to fix; you decide how.** Do what every failing check asks, in the way
+      that helps the reader most; never skip, overrule or explain away a check on your own judgment.
+      `passBar` is the minimum and 100 the aim: keep going until `overall` is 100 or only filler is
+      left, and undo a round that lowers it. Under `passBar` or with `hardFailures` the page is never
+      done (`passed` turns true only once the judge has run).
     - Fix ONE kind of failure per round (all its `mustFix` items), hard ones first, then the lowest
-      panels; edit where the page lives, then score again.
-    - Never add a fact outside the ledger to pass a check. `terms_band` is a nudge: move a term toward
-      its `range` only where the page reads better for it; never swap in synonyms, repeat the keyword,
-      stuff or list terms. The AI-vocabulary and readability limits always win.
-    - Never add words, filler or repeats, and never cut a required keyword use, to move a band or the
-      density; when only that would pass, the check cannot be met: say which and stop.
-    - Repeat until `hardFailures` is empty and `overall` reaches `passBar` (`passed` turns true only
-      once the judge has run). When a check cannot be met (the ledger lacks the facts, the range
-      conflicts with the page type), say in one line which and why, and stop.
+      panels; edit where the page lives, then score again. Research a fact the ledger lacks.
+    - A term goes in its plain form where the page talks about what it names (name the thing instead of
+      a vague word, or cover the point it belongs to); never swap in synonyms, repeat the keyword or list
+      terms. A `suggested` term is optional.
+    - **The only exception is filler.** Never add a fact outside the ledger, filler or repeats, or cut a
+      required keyword use, to meet a check. A term is filler only when no true sentence about the
+      page's topic can hold it; a sentence the page has, or a true point it covers, is never filler. For
+      each term you leave out, tell the user the term and the sentence it would need, and offer to report
+      it with the feedback tool. The AI-vocabulary and readability limits always win.
 11. **Images.** Mark each place an image belongs: real (a photo or a screenshot of the real thing),
     rendered (a chart from data) or generated (an illustration or a hero). Proof is never a generated
     image.
@@ -405,7 +413,7 @@ beside it.
 - **"Use / don't use this page for comparison"**: `seo_content_writer_lock` with
   `include` or `exclude`. Free; the choice sticks. Say the `effect` in one line.
 - **"Set the pass bar to N" / "Publish live on your own" / "Let me check the comparison pages"**:
-  `seo_content_writer_settings_update` `settings` (`passBar` at most 100, `autoPublish`, `comparisonReview`).
+  `seo_content_writer_settings_update` `settings` (`passBar` 95 to 100, `autoPublish`, `comparisonReview`).
 - **"Add an author"**: `seo_content_writer_settings_update` `authors.upsert` with the name, a short bio, a photo
   address and profile links the user gives you; real people only.
 
