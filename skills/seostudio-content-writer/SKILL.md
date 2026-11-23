@@ -115,8 +115,8 @@ stands.
    searches, the comparison pages and what they share, people-also-ask, AI answers, the internal links
    to place, and `current`: what the page scores now and its `mustFix`). Keep its `runId`. Then
    `view: "draft"` for the authors, the settings and an earlier version.
-3. **The comparison set.** Lock it first when the brief says none is locked: `seo_content_writer_lock`
-   with `estimate: true`.
+3. **The comparison set.** Lock it first when the brief says none is locked, or `set.serpOld` (its Google
+   first page is over 7 days old; the lock reads it again): `seo_content_writer_lock` with `estimate: true`.
    - When it costs anything (`credits`, plus `fallbackReads`, `namedThings` and `topicChecks` as
      "up to"), say in one line "Locking the comparison pages, ~$X." and lock them.
    - Call again while `pending` is above 0, then read the brief again (with `runId`).
@@ -126,16 +126,14 @@ stands.
      `review` is `"ask"` or `set.confidence` is not `normal`; then lock again with `include` or
      `exclude`. No user can answer such a set: stop and say why.
    - When the brief says Google ranks fewer than two pages of this type, ask its keep-or-switch question.
-4. **Find where the page lives** (the table above). **Improving a live page** (`action: "optimise"` or a
-   live `url`):
-   - Without a focus, ask once before you research: "Improve the page" / "Rewrite it from zero" (no
-     recommendation: only the user knows). A rewrite runs as "Rewrite this page" below. No one can
-     answer: improve.
+4. **Find where the page lives** (the table above). Every page is written to the same target, whether
+   or not one exists: never ask whether to improve or rewrite, and do not read a live page's text
+   until the target is set (step 8). **A live page** (`action: "optimise"` or a live `url`):
    - Score it as it stands first (`seo_content_score_run` with its `url`, or its source as above): that keeps
-     it once as the page's original, so what a rewrite takes out is shown.
-   - Keep its address, its slug and what still serves the reader; the change can be small or a full
-     rewrite. Keep each heading's anchor id, and the sections that hold its top searches
-     (`elements.removed` in `view: "draft"` flags what the page earns with: `warning: true`).
+     it once as the page's original, so what the change takes out is shown.
+   - Keep its address, its slug and each heading's anchor id. A section that holds its top searches
+     (`elements.removed` in `view: "draft"` flags what the page earns with: `warning: true`) is kept or
+     moved, never lost.
    - **With a focus**, its `goal` comes first and its `scope` bounds the change: `title_description`
      only the meta title and description, `small` only the words the goal names, `page` what the goal
      needs (a full rewrite only when nothing less reaches it). Goals: `rank` (top results for
@@ -151,6 +149,10 @@ stands.
      With fewer than 3 locked pages, also read the other pages ranking for the main keyword.
    - The page gives the reader everything the top pages give (each offer, reward, rule and step), then
      adds the angle; the angle never replaces that.
+   - **What the site already gives this reader:** its pages, tools and live features for this search
+     (routes, components and APIs in site code; else its sitemap and rendered pages). A feature that does
+     what the page offers goes on the page (its own component, or a clear way to it), not a description
+     of it.
    - For a business the page sends readers to: who runs it, its licence or regulator where its field has
      one, how payouts or refunds work, its rating on an independent review site, and where to get help
      when the topic carries a risk.
@@ -179,9 +181,15 @@ stands.
    - No author in the project: take the site's own (its WordPress authors, author data in its code, its
      author or team pages) and add that real person with their bio (`authors.upsert`). Only when the site
      has none, draft one from public profiles as an item for the user to confirm; never invent one.
-8. **Outline.** The H1 and H2-H4 from what the page type needs plus what most locked pages share, in the
+8. **Outline.** First the target: what the page is (its type: an article, a tool, a list, a comparison),
+   what it offers and its H1 and H2-H4, from the search intent and what most locked pages share, in the
    order a reader needs them. A page of the same type already ready or published (`view: "pages"`):
    read it and keep its layout.
+   - **Then map onto the target** the live page (when there is one) and the site's features (step 5):
+     each part keep, rework, add or drop. The gap decides the size of the change, from a text edit to a
+     rebuild; nothing that serves the target is lost because it was there before, and nothing stays only
+     because it was. Show the map in the outline question, one line per part. A request that names a
+     narrow change (title and meta only, the score only, a focus `scope`) bounds it.
    - **The comparison set as the user sees it:** Google's first page for the main keyword, one line per
      result (position, site, type), marked picked or left out and why (`set.pages`, `set.dropped` with
      its `reason`).
@@ -201,8 +209,8 @@ stands.
      tool adds its own free-text choice); the user chooses. The question's text opens with the comparison set.
      Skip this when the user said not to ask.
    - Then, before you write, ask "Write it with this outline (Recommended)" / "Change it" as its own
-     question, its text the outline only (no length, plan or sources): each heading, what its section
-     covers, and where the keywords, images and internal links go. Skip it when the user said not to
+     question, its text the outline only (no length, plan or sources): what the page is, each heading,
+     what its section covers, the map above, and where the keywords, images and internal links go. Skip it when the user said not to
      ask: write the outline to the user before you write.
 9. **Write it where it lives** with the strongest model your runtime has, from ledger facts only, by the
    writing rules below; the meta title, meta description and slug too.
