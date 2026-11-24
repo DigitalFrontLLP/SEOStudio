@@ -81,8 +81,8 @@ Read the `content-writer` skill (`skill_get`) for its writing principles, and wr
    (and `linksAllowed: false` when links are forbidden). Self-promotion
    forbidden outright: ask "Write it without the link (Recommended)" / "Pick another community" /
    "Stop".
-3. **Lock and read.** `seo_parasite_lock` (priced first when no first page is held),
-   again while `pending` > 0. Then `seo_parasite_get` `view: "brief"`.
+3. **Lock and read.** `seo_parasite_lock` (priced first when it must buy Google's first page: none is
+   held, or the held one is over 7 days old), again while `pending` > 0. Then `seo_parasite_get` `view: "brief"`.
 4. **Research.** Read what ranks and the questions Google shows. Every fact you use goes in `facts`;
    every first-hand item only the user can give goes in `needs`, and you ask the user for it.
 5. **Write and save.** `seo_parasite_posts_update` (`title` when titled, `markdown`, `angle`: what the

@@ -126,6 +126,8 @@ stands.
      `review` is `"ask"` or `set.confidence` is not `normal`; then lock again with `include` or
      `exclude`. No user can answer such a set: stop and say why.
    - When the brief says Google ranks fewer than two pages of this type, ask its keep-or-switch question.
+   - A page the user added that the read left out (`dropped` with `added: true`, and a note): tell them why
+     and ask "Go on without it (Recommended)" / "Use another address".
 4. **Find where the page lives** (the table above). Every page is written to the same target, whether
    or not one exists: never ask whether to improve or rewrite, and do not read a live page's text
    until the target is set (step 8). **A live page** (`action: "optimise"` or a live `url`):
