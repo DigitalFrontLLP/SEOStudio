@@ -362,6 +362,10 @@ stands.
   is checked again before you cite it. The user's own prices, products, codes and links are read live
   each time you write, into the ledger with that day's date. A number about another business that the
   user's site quotes is checked at its origin, or left out.
+- **A "checked" line (advice, not scored):** when the page states prices, offers or other businesses'
+  facts and the user keeps the page updated, one line such as "Prices and offers checked <month year>"
+  (the newest check in the ledger); claims carry no date of their own. Never when the user said the
+  page carries no dates.
 - Say how you researched only through what the ledger holds; never claim a check you did not make, and
   never mention your tools or what they could not open: say what the reader needs in their terms.
 
@@ -407,9 +411,8 @@ stands.
 fix): title width and length, meta length, one H1, sentence and paragraph caps, keyword placement and
 stuffing limits, banned AI vocabulary, exactly the map's internal links, a list title's count matching
 the options listed, no past year in the title, no title, description or H1 the same as another live
-page's, every number held by a verified fact, a fact stated in at most two places, one "checked <month
-year>" line when the page states prices, offers or other businesses' facts, and a statistic's year
-beside it.
+page's, every number held by a verified fact, a fact stated in at most two places, and a statistic's
+year beside it.
 
 ## When the user asks later
 
