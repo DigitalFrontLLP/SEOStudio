@@ -420,6 +420,10 @@ beside it.
   version goes to the page's history and the working draft starts empty. Then steps 4 to 13 as for a new
   page: never read the old draft or its versions, start with an empty ledger. The address and slug stay
   while the page is live; the settings and authors stay.
+- **"Read Google again" / "these comparison pages look wrong"**: `seo_content_writer_lock` with
+  `newFirstPage: true` (paid: price it with `estimate: true` first and say the price in one line). A new
+  first page is bought and the pages are picked from it; the draft is kept. Send it once, alone; leave it
+  out of the follow-up calls.
 - **"Use / don't use this page for comparison"**: `seo_content_writer_lock` with
   `include` or `exclude`. Free; the choice sticks. Say the `effect` in one line.
 - **"Set the pass bar to N" / "Publish live on your own" / "Let me check the comparison pages"**:
